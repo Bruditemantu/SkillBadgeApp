@@ -27,24 +27,26 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+AUTH_USER_MODEL = 'Authencation.CustomUser'
 
-
-
-
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
 # Application definition
-
 INSTALLED_APPS = [
     'corsheaders',
-    'rest_framework',
-    'issuer',
-    #"verify_email.apps.VerifyEmailConfig",
-    'User_authentication',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'Authencation',
+    'Recipient',
+    'Organisation',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -85,7 +87,7 @@ WSGI_APPLICATION = 'skillBadge.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': "skillbadge",
+        'NAME': "skillbadgeapp",
         'USER': "postgres",
         'HOST': "localhost",
         'PASSWORD': 1234,
@@ -111,8 +113,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
-AUTH_USER_MODEL = "User_authentication.CustomUser"
 
 
 # Internationalization

@@ -6,7 +6,6 @@ class BadgesSerializer(serializers.ModelSerializer):
         model = Badges
         fields = '__all__'
         
-
 class RecipientsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipients

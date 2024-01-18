@@ -54,23 +54,23 @@ class BadgeDetailsAPIView(APIView):
         if badge_id:
             valid_badge = Badges.objects.get(pk=badge_id)
             if valid_badge:
-                assigned_users = Badge_Assignments.objects.filter(badge_id=badge_id)
-                if assigned_users:
-                    Assignedserializer = BadgeAssignmentSerializer(
-                        assigned_users, many=True
-                    )
+                # assigned_users = Badge_Assignments.objects.get()
+                # if assigned_users:
+                #     Assignedserializer = BadgeAssignmentSerializer(
+                #         assigned_users, many=True
+                #     )
                 Badgeserializer = BadgesSerializer(valid_badge)
                 return Response(
                     {
                         "Badge": Badgeserializer.data,
-                        "Assigned_Users": assigned_users
-                        if Assignedserializer.data
-                        else "None",
+                        # "Assigned_Users": assigned_users
+                        # if Assignedserializer.data
+                        # else "None",
                     },
                     status=status.HTTP_200_OK,
                 )
             return Response(
-                {"msg": "Not a vaild badge"}, status=status.HTTPP_404_NOT_FOUND
+                {"msg": "Not a vaild badge"}, status=status.HTTP_404_NOT_FOUND
             )
         all_badges = Badges.objects.all()
         if all_badges:
