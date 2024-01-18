@@ -18,10 +18,10 @@ from django.contrib import admin
 from django.urls import path
 from Organisation.views import *
 urlpatterns = [
-    path("SkillBadge/",SkillBadgeAPI.as_view()),
+    # path("SkillBadge/",SkillBadgeAPI.as_view()),
     path("admin/", admin.site.urls),
-    path("profileEdit/",ProfileEditAPI.as_view()),
+    # path("profileEdit/",ProfileEditAPI.as_view()),
     path("Badges/",BadgeAPIView.as_view()),
-    path("Issue/",IssuersAPIView.as_view()),
+    # path("Issue/",IssuersAPIView.as_view()),
     
 ]
