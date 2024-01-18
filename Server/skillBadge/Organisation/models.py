@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 from phonenumber_field.modelfields import PhoneNumberField
+from Recipient.models import*
 
 # Create your models here.
 class Badges(models.Model):
@@ -9,7 +10,7 @@ class Badges(models.Model):
     description=models.TextField(max_length=1000,default='')
     criteria=models.CharField(max_length=10,default='')
     image_url = models.ImageField(upload_to='images',default='')
-    issuer_id = models.ForeignKey('Issuers',on_delete=models.CASCADE,null=True)
+    # issuer_id = models.ForeignKey('Issuers',on_delete=models.CASCADE,null=True)
     date_created=models.DateField(default=timezone.now)
     expiration_durations = models.IntegerField(default=0)
     

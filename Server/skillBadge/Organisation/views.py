@@ -6,6 +6,7 @@ from Organisation.models import *
 
 # Create your views here.
 class BadgeAPIView(APIView):
+    # create a badge
       def post(self, request): 
           data=request.data
           serial=BadgesSerializer(data=data)
@@ -17,8 +18,12 @@ class BadgeAPIView(APIView):
               return Response({"data":"invalid data"})
           
       def get(self,request):
-        issuer_id = request.query_params.get('issuer_id')
-        data = Badges.objects.filter(issuer_id=issuer_id)
+        badge_id = request.query_params.get('Badge_id')
+        if badge_id:
+            userdata=Badges.objects.get(pk=badge_id)
+            serial=BadgesSerializer(userdata)
+            return Response({"data":serial.data})
+        data=Badges.objects.all()
         serial =BadgesSerializer(data,many=True)
         return Response({"data":serial.data})
     
