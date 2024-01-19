@@ -27,11 +27,17 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
     is_org = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    issuer_id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100)
+    organisation = models.CharField(max_length=100)
+    organisation_domain = models.CharField(max_length=100)
+    organisation_size = models.IntegerField()
+    badges_and_types = models.TextField()
 
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['email','contact_info']
 
     def str(self):
         return self.username 

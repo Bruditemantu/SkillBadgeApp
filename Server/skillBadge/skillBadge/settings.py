@@ -36,7 +36,7 @@ REST_FRAMEWORK = {
 }
 # Application definition
 INSTALLED_APPS = [
-    'corsheaders',
+   # 'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'Recipient',
     'Organisation',
     'rest_framework',
+    "rest_framework.authtoken",
 ]
 
 MIDDLEWARE = [
@@ -84,16 +85,15 @@ WSGI_APPLICATION = 'skillBadge.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+# settings.py
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': "skillbadgeapp",
-        'USER': "postgres",
-        'HOST': "localhost",
-        'PASSWORD': 1234,
-        "PORT": 5432,
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / "db.sqlite3",  # Change this path if needed
     }
 }
+
 
 
 # Password validation

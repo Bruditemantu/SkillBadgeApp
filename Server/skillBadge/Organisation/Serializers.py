@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import *
+from Authencation.models import CustomUser
 
 class BadgesSerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,3 +16,10 @@ class BadgeAssignmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Badge_Assignments
         fields = '__all__'
+        
+        
+class Issuer_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = "__all__"
+        

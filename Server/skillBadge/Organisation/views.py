@@ -3,7 +3,12 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Badge_Assignments, Badges
-from .Serializers import BadgeAssignmentSerializer, BadgesSerializer
+from .Serializers import BadgeAssignmentSerializer, BadgesSerializer,Issuer_Serializer
+from django.http import JsonResponse
+from django.shortcuts import render, get_object_or_404
+from Authencation.models import CustomUser
+from rest_framework import status
+from rest_framework.authentication import TokenAuthentication
 
 
 class BadgeAssignmentAPIView(APIView):
@@ -104,3 +109,78 @@ class BadgeDetailsAPIView(APIView):
 #             serializer = BadgeAssignmentSerializer(assigned_badges, many=True)
 #             return Response(serializer.data,status=status.HTTP_200_OK)
 #         assigned_users = Badge_Assignments.
+
+
+
+
+
+class Issuer_details(APIView):
+    
+    #  def get(self, request):
+    #     # Handle GET requests if needed
+    #     return render(request, 'apply_for_user.html')
+     def post(self, request):
+         
+        if request.method == 'POST':
+            
+            name = request.data.get('name')
+            organisation = request.data.get('organisation')
+           
+
+            serializer = Issuer_Serializer(data=request.data)
+
+            
+            if serializer.is_valid():
+                
+                validated_data = serializer.validated_data
+
+                
+                issuer_instance = Issuer.objects.create(**validated_data)
+                return Response(
+                    {
+                   'status': True,
+                    "status_code": 201,
+                    'message': 'Successfully Register',
+                    
+                   
+                })
+
+               
+            else:
+                return Response(
+                    {
+                        "status": False,
+                        "status_code": 400,
+                        "message": "Invalid Credentials",
+                        "error": serializer.errors,
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+
+class EditIssuerDetails(APIView):
+    template_name = 'issuer_detail.html'
+
+    def get(self, request, issuer_id=None):
+        if issuer_id:
+            issuer = get_object_or_404(Issuer, issuer_id=issuer_id)
+            serializer = Issuer_Serializer(instance=issuer)
+            # return render(request, self.template_name, {'form': serializer, 'issuer': issuer})
+            return Response({"data":serializer.data})
+            
+        else:
+           
+            return Response(request, self.issuer_detail, {'form': None, 'issuer': None})
+
+    def put(self, request, issuer_id=None): 
+        issuer = get_object_or_404(Issuer, issuer_id=issuer_id)
+        serializer = Issuer_Serializer(instance=issuer, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"data": serializer.data})
+        else:
+            return render(request, self.template_name, {'form': serializer, 'issuer': issuer})
+        
+        
+    def delete(self, request, issuer_id = None):
+        issuer = get_object_or_404(Issuer, issuer_id=issuer_id)

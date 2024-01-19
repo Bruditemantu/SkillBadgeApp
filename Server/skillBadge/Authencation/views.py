@@ -11,6 +11,9 @@ from django.shortcuts import render
 from .models import CustomUser
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.authtoken.models import Token
+from oauthlib.common import generate_token
+
 class HomePage(APIView):
     def get(self, request):
         return Response({'message': 'Welcome to the homepage!'})
@@ -120,7 +123,7 @@ class SignupPage(APIView):
 
 #         except ValueError as e:
 #             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
+ 
 #         return Response({'error': 'Invalid request method'}, status=status.HTTP_400_BAD_REQUEST)
 @method_decorator(csrf_exempt, name="dispatch")
 class LoginPage(APIView):
@@ -138,19 +141,25 @@ class LoginPage(APIView):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
             print(username, password)
-            print(authenticate(request, username="testuser1",password="delta2024!" ))
+            print(authenticate(request))
             user = authenticate(request, username=username, password=password)
+            serializer = LoginSerializer(user)
+            
             print(user)
             if user is not None:
+                serializer = LoginSerializer(user)
                 login(request, user)
-                # token, _ = Token.objects.get_or_create(user=user)
-
+                # _, token = AuthToken.objects.create(user)
+                # token, created = Token.objects.get_or_create(user=request.user)
+                # token = str(token)
+                login
                 return Response(
                     {
                    'success': True,
                    'message': 'Login successful',
                     'user_id': user.id,
-                    'username': user.username
+                    'username': user.username,
+                    "token": token
                 })
             else:
                 return Response(
