@@ -2,40 +2,38 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Badge_Assignments, Badges
-from .Serializers import BadgeAssignmentSerializer, BadgesSerializer
+from .models import Badge_Assignment, Badges
+from .Serializers import *
 
 
 class BadgeAssignmentAPIView(APIView):
     def post(self, request):
-        user = request.user
+        # user = request.user
 
-        if user.is_authenticated:
-            # if the user is not an org then we deny access
-            if user.get("is_org") == False:
-                return Response(
-                    {"msg": "Access Denied"}, status=status.HTTP_403_FORBIDDEN
-                )
+        # if user.is_authenticated:
+        #     # if the user is not an org then we deny access
+        #     if user.get("is_org") == False:
+        #         return Response(
+        #             {"msg": "Access Denied"}, status=status.HTTP_403_FORBIDDEN
+        #         )
 
             # checking if the particular badge is already assigned to the user by the org
-            badge_assigned = Badge_Assignments.objects.filter(
-                badge_id=user.get("id"), recipient_id=request.data.get("recipient_id")
+            badge_assigned = Badge_Assignment.objects.filter(
+                badge_id=request.data.get("badge_id"), recipient_id=request.data.get("recipient")
             )
             if badge_assigned:
                 return Response(
                     {"msg": "Badge is already assigned to the user"},
                     status=status.HTTP_409_CONFLICT,
                 )
-
             serializer = BadgeAssignmentSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
+                return Response({"data":serializer.data}, status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        return Response(
-            {"error": "User not authenticated"}, status=status.HTTP_401_UNAUTHORIZED
-        )
+        # return Response(
+        #     {"error": "User not authenticated"}, status=status.HTTP_401_UNAUTHORIZED
+        # )
 
 
 class BadgeDetailsAPIView(APIView):
@@ -59,10 +57,10 @@ class BadgeDetailsAPIView(APIView):
                 #     Assignedserializer = BadgeAssignmentSerializer(
                 #         assigned_users, many=True
                 #     )
-                Badgeserializer = BadgesSerializer(valid_badge)
+                Badgeserializer = GetBadgesSerializer(valid_badge)
                 return Response(
                     {
-                        "Badge": Badgeserializer.data,
+                        "data": Badgeserializer.data,
                         # "Assigned_Users": assigned_users
                         # if Assignedserializer.data
                         # else "None",
@@ -74,7 +72,7 @@ class BadgeDetailsAPIView(APIView):
             )
         all_badges = Badges.objects.all()
         if all_badges:
-            serializer = BadgesSerializer(all_badges, many=True)
+            serializer = GetBadgesSerializer(all_badges, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response({"msg": "No badges created yet"}, status=status.HTTP_200_OK)
 

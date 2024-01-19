@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'Recipient',
     'Organisation',
     'rest_framework',
+    'rest_framework.authtoken'
 ]
 
 MIDDLEWARE = [
@@ -87,7 +88,7 @@ WSGI_APPLICATION = 'skillBadge.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': "skillbadgeapp",
+        'NAME': "skb",
         'USER': "postgres",
         'HOST': "localhost",
         'PASSWORD': 1234,
