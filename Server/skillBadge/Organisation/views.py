@@ -52,18 +52,11 @@ class BadgeDetailsAPIView(APIView):
         if badge_id:
             valid_badge = Badges.objects.get(pk=badge_id)
             if valid_badge:
-                # assigned_users = Badge_Assignments.objects.get()
-                # if assigned_users:
-                #     Assignedserializer = BadgeAssignmentSerializer(
-                #         assigned_users, many=True
-                #     )
                 Badgeserializer = GetBadgesSerializer(valid_badge)
                 return Response(
                     {
+                        "msg":"Badge Found, Retrival Success",
                         "data": Badgeserializer.data,
-                        # "Assigned_Users": assigned_users
-                        # if Assignedserializer.data
-                        # else "None",
                     },
                     status=status.HTTP_200_OK,
                 )
@@ -72,7 +65,7 @@ class BadgeDetailsAPIView(APIView):
             )
         all_badges = Badges.objects.all()
         if all_badges:
-            serializer = GetBadgesSerializer(all_badges, many=True)
+            serializer = BadgesSerializer(all_badges, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response({"msg": "No badges created yet"}, status=status.HTTP_200_OK)
 
@@ -92,13 +85,3 @@ class BadgeDetailsAPIView(APIView):
             serial.save()
             return Response({"data": serial.data})
         return Response(serial.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-# class fetchUserDetailsAPIView(APIView):
-#     def get(self,request):
-#         recipient_id = request.query_params.get("recipient_id")
-#         if recipient_id:
-#             assigned_badges = Badge_Assignments.objects.get(pk=recipient_id)
-#             serializer = BadgeAssignmentSerializer(assigned_badges, many=True)
-#             return Response(serializer.data,status=status.HTTP_200_OK)
-#         assigned_users = Badge_Assignments.
