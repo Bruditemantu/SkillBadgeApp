@@ -6,20 +6,10 @@ class BadgesSerializer(serializers.ModelSerializer):
         model = Badges
         fields = '__all__'
         
-class SkillBadgeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SkillBadges
-        fields = '__all__'   
-        
-class ProfileEditSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProfileEdit
-        fields = ['Email','Password','Name','Strength']             
 
-class IssuersSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Issuers
-        fields = '__all__'
+            
+
+
 
 
 class RecipientsSerializer(serializers.ModelSerializer):
