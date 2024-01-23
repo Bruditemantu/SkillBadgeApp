@@ -36,6 +36,7 @@ REST_FRAMEWORK = {
 }
 # Application definition
 INSTALLED_APPS = [
+    'phonenumber_field',
    # 'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -90,8 +91,12 @@ WSGI_APPLICATION = 'skillBadge.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / "db.sqlite3",
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': "skb",
+        'USER': "postgres",
+        'HOST': "localhost",
+        'PASSWORD': 1234,
+        "PORT": 5432,
     }
 }
 

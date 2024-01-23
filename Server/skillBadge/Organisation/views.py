@@ -10,7 +10,7 @@ from Authencation.models import CustomUser
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
 from Authencation.serializers import UserSerializer
-
+from Utils.sendMail import send_custom_email
 
 class BadgeAssignmentAPIView(APIView):
     def post(self, request):
@@ -95,32 +95,27 @@ class BadgeDetailsAPIView(APIView):
 
     # update a badge
     def put(self, request):
-<<<<<<< HEAD
-        data = request.data
-        serial = BadgesSerializer(data=data)
-        if serial.is_valid():
-            serial.save()
-            return Response({"data": serial.data})
-        return Response(serial.errors, status=status.HTTP_400_BAD_REQUEST)
+        badge_id = request.query_params.get("badge_id")
+        if badge_id:
+            valid_badge = Badges.objects.get(pk=badge_id)
+            if valid_badge:
+                updatedSerializer = BadgesSerializer(valid_badge, data=request.data)
+                if updatedSerializer.is_valid():
+                    updatedSerializer.save()
+                    return Response(
+                        {
+                            "status": "Badge Updated Successfully",
+                            "data": updatedSerializer.data,
+                        },
+                        status=status.HTTP_200_OK,
+                    )
+                return Response(
+                    {"err": updatedSerializer.errors},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
 
-# class fetchUserDetailsAPIView(APIView):
-#     def get(self,request):
-#         recipient_id = request.query_params.get("recipient_id")
-#         if recipient_id:
-#             assigned_badges = Badge_Assignments.objects.get(pk=recipient_id)
-#             serializer = BadgeAssignmentSerializer(assigned_badges, many=True)
-#             return Response(serializer.data,status=status.HTTP_200_OK)
-#         assigned_users = Badge_Assignments.
-
-
-
-
-
-
-
-
-class EditIssuerDetails(APIView):
+class OrganisationDetails(APIView):
    
 
     def get(self, request, id=None):
@@ -170,54 +165,3 @@ class EditIssuerDetails(APIView):
         
         
        
-class DeleteIssuerDetails(APIView):
-      def patch(self, request, id=None):
-        issuer = get_object_or_404(CustomUser, id=id)
-        serializer = Issuer_Serializer(instance=issuer, data=request.data, partial=True)
-
-        
-        for field in serializer.fields:
-            if field in request.data:
-                request.data[field] = None
-
-        if serializer.is_valid():
-            serializer.save()
-            return Response({
-                "data": serializer.data,
-                "status": True,
-                "status_code": 200,
-                "message": "Successfully updated",
-            })
-        else:
-            return Response({
-                "status": False,
-                "status_code": 400,
-                "message": "Cannot update",
-                "error": serializer.errors,
-            }, status=status.HTTP_400_BAD_REQUEST)
-=======
-        badge_id = request.query_params.get("badge_id")
-        if badge_id:
-            valid_badge = Badges.objects.get(pk=badge_id)
-            if valid_badge:
-                updatedSerializer = BadgesSerializer(valid_badge, data=request.data)
-                if updatedSerializer.is_valid():
-                    updatedSerializer.save()
-                    return Response(
-                        {
-                            "status": "Badge Updated Successfully",
-                            "data": updatedSerializer.data,
-                        },
-                        status=status.HTTP_200_OK,
-                    )
-                return Response(
-                    {"err": updatedSerializer.errors},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-        # data = request.data
-        # serial = BadgesSerializer(data=data)
-        # if serial.is_valid():
-        #     serial.save()
-        #     return Response({"data": serial.data})
-        # return Response(serial.errors, status=status.HTTP_400_BAD_REQUEST)
->>>>>>> b2e73e8221eac87b5190ad1215d8327a0eaebb60
