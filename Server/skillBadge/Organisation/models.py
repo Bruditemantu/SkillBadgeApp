@@ -3,6 +3,7 @@ from django.db import models
 from django.utils import timezone
 from Recipient.models import *
 from Authencation.models import *
+from datetime import datetime
 # from phonenumber_field.modelfields import PhoneNumberField
 
 # Create your models here.
@@ -13,7 +14,7 @@ class Badges(models.Model):
     image_url = models.ImageField(upload_to='images',default='',null=True, blank=True)
     assigned_users = models.ManyToManyField(CustomUser,through="Badge_Assignment",related_name="assigned_users")
     org_id = models.ForeignKey(CustomUser,on_delete=models.CASCADE,null=True)
-    date_created=models.DateField(default=timezone.now)
+    date_created=models.DateField(default=datetime.now().date(),null = True,blank=True)
     expiration_durations = models.IntegerField(default=0)
     
 class Badge_Assignment(models.Model):

@@ -24,4 +24,5 @@ urlpatterns = [
     path("api/auth/",include('Authencation.urls')),
     # path("api/user/",include('Recipient.urls')),
     path("api/org/",include('Organisation.urls')),
+    path("api/recipient/",include('Recipient.urls')),
 ]
