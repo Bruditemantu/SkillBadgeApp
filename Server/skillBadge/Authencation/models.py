@@ -33,7 +33,8 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
     organisation_domain = models.CharField(max_length=100, null=True, blank=True)
     organisation_size = models.IntegerField(null=True, blank=True)
     badges_and_types = models.TextField(null=True, blank=True)
-    is_org = models.BooleanField(default=False)
+    is_verified = models.BooleanField(default=False)
+    
     
 
     def __str__(self):

@@ -123,7 +123,7 @@ class EditIssuerDetails(APIView):
         if id:
             issuer = get_object_or_404(CustomUser, id=id)
             serializer = UserSerializer(instance=issuer)
-            # return render(request, self.template_name, {'form': serializer, 'issuer': issuer})
+            
             return Response({"data":serializer.data})
             
         else:
@@ -131,11 +131,20 @@ class EditIssuerDetails(APIView):
             return Response(request, self.issuer_detail, {'form': None, 'issuer': None})
 
    
-        def patch(self, request, id=None):
-            issuer = get_object_or_404(CustomUser, id=id)
-            serializer = Issuer_Serializer(instance=issuer, data=request.data, partial=True)
+    def patch(self, request, id=None):
+        issuer = get_object_or_404(CustomUser, id=id)
+        if not issuer.is_org:
+            return Response(
+         {
+            "status": False,
+            "status_code": 404,  
+            "message": "Organization not found",
+            },
+            status=status.HTTP_404_NOT_FOUND,
+        )
+        serializer = Issuer_Serializer(instance=issuer, data=request.data, partial=True)
 
-            if serializer.is_valid():
+        if serializer.is_valid():
                 serializer.save()
                 return Response({"data": serializer.data,
                                 'status': True,
@@ -144,8 +153,8 @@ class EditIssuerDetails(APIView):
                                  
                                  }
                                 )
-            else:
-                 return Response(
+        else:
+                return Response(
                     {
                         "status": False,
                         "status_code": 400,
