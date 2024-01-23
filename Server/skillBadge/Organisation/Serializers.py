@@ -5,24 +5,14 @@ from Authencation.models import CustomUser
 class BadgesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Badges
-        fields = ['name','description','criteria','image_url','date_created','expiration_durations']
-
-class BadgeAssignmentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Badge_Assignment
-        fields = ['badge_id','recipient']        
-
-class GetBadgesSerializer(serializers.ModelSerializer):
-    assigned_to = BadgeAssignmentSerializer(many=True)
-    class Meta:
-        model = Badges
-        fields = ['id','org_id','name','description','criteria','image_url','date_created','expiration_durations','assigned_to']
+        fields = ['id','name','description','criteria','image_url','date_created','expiration_durations']    
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model =  CustomUser
-        feilds = ['id']         
+        fields = ['id','name']  
 
+<<<<<<< HEAD
  
         
 class Issuer_Serializer(serializers.ModelSerializer):
@@ -37,3 +27,16 @@ class Issuer_Serializer(serializers.ModelSerializer):
             
         ]
         
+=======
+class BadgeAssignmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Badge_Assignment
+        fields = ['id','badge_id','recipient']          
+
+class GetBadgesSerializer(serializers.ModelSerializer): 
+    assigned_users = UserSerializer(many=True)
+    class Meta:
+        model = Badges
+        fields = ['id','org_id','name','description','criteria','image_url','date_created','expiration_durations','assigned_users']
+    
+>>>>>>> b2e73e8221eac87b5190ad1215d8327a0eaebb60

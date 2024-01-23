@@ -105,9 +105,9 @@ class LoginPage(APIView):
                     {
                         "status": False,
                         "status_code": 401,
-                        "message": "Invalid credentials.",
+                        "message": "Invalid credentials",
                     },
-                   status=status.HTTP_401_UNAUTHORIZED,
+                #    status=status.HTTP_401_UNAUTHORIZED, 
                 )
         except Exception as err:
             return Response(
