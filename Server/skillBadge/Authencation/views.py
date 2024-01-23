@@ -57,7 +57,7 @@ class SignupPage(APIView):
                     "status": False,
                     "status_code": 500,
                     "message": "Something went wrong",
-                    "error": err,
+                    "error": str(err),
                 },
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
@@ -99,9 +99,9 @@ class LoginPage(APIView):
                     {
                         "status": False,
                         "status_code": 401,
-                        "message": "Invalid credentials.",
+                        "message": "Invalid credentials",
                     },
-                   status=status.HTTP_401_UNAUTHORIZED,
+                #    status=status.HTTP_401_UNAUTHORIZED, 
                 )
         except Exception as err:
             return Response(
