@@ -43,13 +43,8 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
 
     objects = CustomUserManager()
 
-<<<<<<< HEAD
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email','contact_info','name']
-=======
-    USERNAME_FIELD = 'username' 
-    REQUIRED_FIELDS = []
->>>>>>> b2e73e8221eac87b5190ad1215d8327a0eaebb60
 
     def str(self):
         return self.username 
