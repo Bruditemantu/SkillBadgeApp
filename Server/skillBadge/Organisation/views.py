@@ -4,7 +4,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import Badge_Assignment, Badges
 from .Serializers import *
-
+from django.http import JsonResponse
+from django.shortcuts import render, get_object_or_404
+from Authencation.models import CustomUser
+from rest_framework import status
+from rest_framework.authentication import TokenAuthentication
+from Authencation.serializers import UserSerializer
+from Utils.sendMail import send_custom_email
 
 class BadgeAssignmentAPIView(APIView):
     def post(self, request):
@@ -17,34 +23,39 @@ class BadgeAssignmentAPIView(APIView):
         #             {"msg": "Access Denied"}, status=status.HTTP_403_FORBIDDEN
         #         )
 
-            # checking if the particular badge is already assigned to the user by the org
-            badge_assigned = Badge_Assignment.objects.filter(
-                badge_id=request.data.get("badge_id"), recipient_id=request.data.get("recipient")
+        # checking if the particular badge is already assigned to the user by the org
+        badge_assigned = Badge_Assignment.objects.filter(
+            badge_id=request.data.get("badge_id"),
+            recipient_id=request.data.get("recipient"),
+        )
+        if badge_assigned:
+            return Response(
+                {"msg": "Badge is already assigned to the user"},
+                status=status.HTTP_409_CONFLICT,
             )
-            if badge_assigned:
-                return Response(
-                    {"msg": "Badge is already assigned to the user"},
-                    status=status.HTTP_409_CONFLICT,
-                )
-            serializer = BadgeAssignmentSerializer(data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response({"data":serializer.data}, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        # return Response(
-        #     {"error": "User not authenticated"}, status=status.HTTP_401_UNAUTHORIZED
-        # )
+        serializer = BadgeAssignmentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"data": serializer.data}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # return Response(
+    #     {"error": "User not authenticated"}, status=status.HTTP_401_UNAUTHORIZED
+    # )
 
 
 class BadgeDetailsAPIView(APIView):
     # create a badge
     def post(self, request):
-        data = request.data
-        serial = BadgesSerializer(data=data)
+        badge_data = request.data
+        serial = BadgesSerializer(data=badge_data)
         if serial.is_valid():
             serial.save()
-            return Response({"data": serial.data})
-        return Response({"data": "invalid data"})
+            return Response(
+                {"status": "Badge Created!", "data": serial.data},
+                status=status.HTTP_201_CREATED,
+            )
+        return Response({"msg": serial.errors}, status=status.HTTP_400_BAD_REQUEST)
 
     # fetch badge data with the users it is assigned to
     def get(self, request):
@@ -55,7 +66,7 @@ class BadgeDetailsAPIView(APIView):
                 Badgeserializer = GetBadgesSerializer(valid_badge)
                 return Response(
                     {
-                        "msg":"Badge Found, Retrival Success",
+                        "msg": "Badge Found, Retrival Success",
                         "data": Badgeserializer.data,
                     },
                     status=status.HTTP_200_OK,
@@ -73,15 +84,84 @@ class BadgeDetailsAPIView(APIView):
     def delete(self, request):
         badge_id = request.query_params.get("badge_id")
         if badge_id:
-            badge_to_delete = Badges.objects.get(pk=badge_id)
-            badge_to_delete.delete()
-            return Response({"msg": "Badge Deleted"}, status=status.HTTP_200_OK)
+            valid_badge = Badges.objects.get(pk=badge_id)
+            if valid_badge:
+                badge_to_delete = Badges.objects.get(pk=badge_id)
+                badge_to_delete.delete()
+                return Response({"msg": "Badge Deleted"}, status=status.HTTP_200_OK)
+            return Response(
+                {"msg": "Not a vaild badge"}, status=status.HTTP_404_NOT_FOUND
+            )
 
     # update a badge
     def put(self, request):
-        data = request.data
-        serial = BadgesSerializer(data=data)
-        if serial.is_valid():
-            serial.save()
-            return Response({"data": serial.data})
-        return Response(serial.errors, status=status.HTTP_400_BAD_REQUEST)
+        badge_id = request.query_params.get("badge_id")
+        if badge_id:
+            valid_badge = Badges.objects.get(pk=badge_id)
+            if valid_badge:
+                updatedSerializer = BadgesSerializer(valid_badge, data=request.data)
+                if updatedSerializer.is_valid():
+                    updatedSerializer.save()
+                    return Response(
+                        {
+                            "status": "Badge Updated Successfully",
+                            "data": updatedSerializer.data,
+                        },
+                        status=status.HTTP_200_OK,
+                    )
+                return Response(
+                    {"err": updatedSerializer.errors},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+
+class OrganisationDetails(APIView):
+   
+
+    def get(self, request, id=None):
+        if id:
+            issuer = get_object_or_404(CustomUser, id=id)
+            serializer = UserSerializer(instance=issuer)
+            
+            return Response({"data":serializer.data})
+            
+        else:
+           
+            return Response(request, self.issuer_detail, {'form': None, 'issuer': None})
+
+   
+    def patch(self, request, id=None):
+        issuer = get_object_or_404(CustomUser, id=id)
+        if not issuer.is_org:
+            return Response(
+         {
+            "status": False,
+            "status_code": 404,  
+            "message": "Organization not found",
+            },
+            status=status.HTTP_404_NOT_FOUND,
+        )
+        serializer = Issuer_Serializer(instance=issuer, data=request.data, partial=True)
+
+        if serializer.is_valid():
+                serializer.save()
+                return Response({"data": serializer.data,
+                                'status': True,
+                                "status_code": 201,
+                                'message': 'Successfully Register',
+                                 
+                                 }
+                                )
+        else:
+                return Response(
+                    {
+                        "status": False,
+                        "status_code": 400,
+                        "message": "Cannot Register",
+                        "error": serializer.errors,
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+        
+        
+       

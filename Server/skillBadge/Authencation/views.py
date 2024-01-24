@@ -1,5 +1,4 @@
 # views.py
-
 from django.contrib.auth import authenticate, login
 from rest_framework import status
 from rest_framework.response import Response
@@ -12,7 +11,7 @@ from .models import CustomUser
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.authtoken.models import Token
-
+from Utils.sendMail import send_custom_email
 
 
 class SignupPage(APIView):
@@ -41,7 +40,10 @@ class SignupPage(APIView):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
             serializer.save()
-            # serializer= serializer.create(request.data)
+            context = {"subject":f"Registration Successful! Welcome to the team {serializer.data.get('name')}",
+                       "context_data":f"Dear {serializer.data.get('name')}, thank you for your registration with us."
+                       }
+            send_custom_email(serializer.data.get("email"),context)
             return Response(
                 {
                     "status": True,
@@ -81,27 +83,27 @@ class LoginPage(APIView):
             
             # print(authenticate(request, username="testuser1",password="delta2024!" ))
             user = authenticate(request, username=username, password=password)
+            
             print(user)
             if user is not None:
                 login(request, user)
                 token, _ = Token.objects.get_or_create(user=user)
 
-               
+                login
                 return Response(
                     {
                         "token":token.key,
                         'success': True,
                         'message': 'Login successful',
-                      
                 })
             else:
                 return Response(
                     {
                         "status": False,
                         "status_code": 401,
-                        "message": "Invalid credentials.",
+                        "message": "Invalid credentials",
                     },
-                   status=status.HTTP_401_UNAUTHORIZED,
+                #    status=status.HTTP_401_UNAUTHORIZED, 
                 )
         except Exception as err:
             return Response(
@@ -113,4 +115,3 @@ class LoginPage(APIView):
                 },
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
-
