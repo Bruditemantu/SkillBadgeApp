@@ -231,7 +231,7 @@ class EditIssuerDetails(APIView):
             
             if id:
                 issuer = get_object_or_404(CustomUser, id=id)
-                serializer = UserSerializer(instance=issuer)
+                serializer = Issuer_Serializer(instance=issuer)
                 return Response({"data": serializer.data})
 
             else:

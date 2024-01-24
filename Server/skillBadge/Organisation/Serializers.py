@@ -23,3 +23,14 @@ class GetBadgesSerializer(serializers.ModelSerializer):
         model = Badges
         fields = ['id','org_id','name','description','criteria','image_url','date_created','expiration_durations','assigned_users']
     
+class Issuer_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = [
+            
+            'organisation',
+            'organisation_domain',
+            'organisation_size',
+            'badges_and_types',
+            
+        ]
