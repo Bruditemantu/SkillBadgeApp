@@ -11,6 +11,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import AllowAny
 from rest_framework.authentication import TokenAuthentication
+from Utils.sendMail import send_custom_email
 
 
 
@@ -41,7 +42,10 @@ class SignupPage(APIView):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
             serializer.save()
-            # serializer= serializer.create(request.data)
+            context = {"subject":f"Registration Successful! Welcome to the team {serializer.data.get('name')}",
+                       "context_data":f"Dear {serializer.data.get('name')}, thank you for your registration with us."
+                       }
+            send_custom_email(serializer.data.get("email"),context)
             return Response(
                 {
                     "status": True,

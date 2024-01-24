@@ -7,5 +7,4 @@ urlpatterns = [
     path('apply_for_issuer/<int:id>/', EditIssuerDetails.as_view(), name='Apply_user'),
     path('delete/<int:id>/', DeleteIssuerDetails.as_view(), name='Delete_Issuser'),
     
-
 ]

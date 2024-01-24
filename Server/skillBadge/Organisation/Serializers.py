@@ -11,7 +11,19 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model =  CustomUser
         fields = ['id','name']  
-
+        
+class Issuer_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = [
+            
+            'organisation',
+            'organisation_domain',
+            'organisation_size',
+            'badges_and_types',
+            
+        ]
+        
 class BadgeAssignmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Badge_Assignment

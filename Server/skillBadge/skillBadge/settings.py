@@ -96,20 +96,13 @@ WSGI_APPLICATION = 'skillBadge.wsgi.application'
 # settings.py
 
 DATABASES = {
-     'default': {
-
+    'default': {
         'ENGINE': 'django.db.backends.postgresql',
-
-        'NAME': 'skb',
-
-        'USER': 'postgres',
-
-        'PASSWORD': '12345678',
-
-        'HOST': 'localhost',
-
-        'PORT': "5432",
-
+        'NAME': "skb",
+        'USER': "postgres",
+        'HOST': "localhost",
+        'PASSWORD': 12345678,
+        "PORT": 5432,
     }
 }
 

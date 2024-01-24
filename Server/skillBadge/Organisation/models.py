@@ -3,7 +3,7 @@ from django.db import models
 from datetime import datetime
 from Recipient.models import *
 from Authencation.models import *
-from phonenumber_field.modelfields import PhoneNumberField
+# from phonenumber_field.modelfields import PhoneNumberField
 
 # Create your models here.
 class Badges(models.Model):
@@ -21,13 +21,3 @@ class Badge_Assignment(models.Model):
     recipient=models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     verification_code = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
         
-# class Badge_Assignments(models.Model):
-#     badge_id=models.ForeignKey(Badges,on_delete=models.CASCADE)
-#     recipient=models.ForeignKey(CustomUser,on_delete=models.CASCADE)      
-    # unique_verification_code=models.CharField(max_length=255, unique=True)
-
-    # def save(self, *args, **kwargs):  
-    #     # Generate a unique verification code using UUID
-    #     if not self.unique_verification_code:
-    #         self.unique_verification_code = str(uuid.uuid4())
-    #     super().save(*args, **kwargs)         

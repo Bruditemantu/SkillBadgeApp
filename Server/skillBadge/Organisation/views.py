@@ -214,13 +214,6 @@ class BadgeDetailsAPIView(APIView):
 #         assigned_users = Badge_Assignments.
 
 
-
-
-
-
-
-
-
         
 class EditIssuerDetails(APIView):
     authentication_classes = [TokenAuthentication]
