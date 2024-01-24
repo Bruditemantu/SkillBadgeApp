@@ -25,18 +25,24 @@ SECRET_KEY = 'django-insecure-2jf^y2zz&a#&3dasuu44xt4hdy@8%12-smgw+vrnhwu%3!dkxp
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 AUTH_USER_MODEL = 'Authencation.CustomUser'
+AUTH_USER_MODEL = 'Authencation.CustomUser'
 
-REST_FRAMEWORK = {
+REST_FRAMEWORK = {  
+    'DEFAULT_PERMISSION_CLASSES': [     
+        'rest_framework.permissions.IsAuthenticated', 
+    ], 
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-    ]
-}
+        'rest_framework.authentication.TokenAuthentication', 
+    ], 
+} 
+
 # Application definition
 INSTALLED_APPS = [
-    'phonenumber_field',
+    
+     'phonenumber_field',        
    # 'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',

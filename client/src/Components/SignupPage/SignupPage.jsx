@@ -9,8 +9,8 @@ const SignupPage = () => {
     password: "",
     email: "",
     name: "",
-    contact_info:"",
-    cnfrmpass:"",
+    contact_info: "",
+    cnfrmpass: "",
   });
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
