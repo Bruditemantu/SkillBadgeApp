@@ -11,6 +11,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import AllowAny
 from rest_framework.authentication import TokenAuthentication
+from Utils.sendMail import send_custom_email
 
 
 
