@@ -50,7 +50,7 @@ class SignupPage(APIView):
                 {
                     "status": True,
                     "status_code": 201,
-                    "message": "Successfully Register.",
+                    "message": "Successfully Registered.",
                     "data": serializer.data,
                 },
                 status=status.HTTP_201_CREATED,

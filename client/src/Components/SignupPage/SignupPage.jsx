@@ -2,8 +2,12 @@ import { useState } from "react";
 import React from "react";
 import "./SignupPage.css";
 import Axios from "axios";
+import {useNavigate} from "react-router-dom"
 
 const SignupPage = () => {
+
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -30,27 +34,29 @@ const SignupPage = () => {
         "Content-Type": "application/json",
       },
     };
-    const response = await Axios.post(
-      "http://127.0.0.1:8000/api/auth/signup/",
-      formData,
-      config
-    ).catch((error) => {
-      console.log(error.response.data)
-      if(error.response.data.message == "Invalid Credentials"){
-        if(error.response.data.error.hasOwnProperty("non_field_errors")){
-          setErrormsg(error.response.data.error.non_field_errors);
-          return;
-        }else{
-          setErrormsg(error.response.data.error.username);
+    await Axios.post("http://127.0.0.1:8000/api/auth/signup/", formData, config)
+      .then((response) => {
+        console.log(response.data);
+        if (response.data.message == "Successfully Registered.") {
+          setIsSignedIn(true);
+          navigate('/login', { replace: true });
+        }
+      })
+      .catch((error) => {
+        // console.log(error.response.data);
+        if (error.response.data.message == "Invalid Credentials") {
+          if (error.response.data.error.hasOwnProperty("non_field_errors")) {
+            setErrormsg(error.response.data.error.non_field_errors);
+            return;
+          } else {
+            setErrormsg(error.response.data.error.username);
+            return;
+          }
+        } else {
+          setErrormsg(error.response.data.message);
           return;
         }
-      }
-      else{
-        setErrormsg(error.response.data.message);
-        return;
-      }
-    });
-    setIsSignedIn(true);
+      });
   };
 
   return (
