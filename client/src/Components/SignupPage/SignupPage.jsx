@@ -10,13 +10,14 @@ const SignupPage = () => {
     email: "",
     name: "",
     contact_info: "",
-    cnfrmpass: "",
+    confirm_password: "",
   });
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isSignedIn, setIsSignedIn] = useState(false);
   const [errormsg, setErrormsg] = useState("");
 
-  const { username, password, name, email } = formData;
+  const { username, password, name, email, contact_info, confirm_password } =
+    formData;
 
   const onChangeInput = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -33,13 +34,23 @@ const SignupPage = () => {
       "http://127.0.0.1:8000/api/auth/signup/",
       formData,
       config
-    );
-    console.log(response.data.message);
-    if (response.data.message == "Login successful") {
-      setIsLoggedIn(true);
-    } else {
-      setErrormsg(response.data.message);
-    }
+    ).catch((error) => {
+      console.log(error.response.data)
+      if(error.response.data.message == "Invalid Credentials"){
+        if(error.response.data.error.hasOwnProperty("non_field_errors")){
+          setErrormsg(error.response.data.error.non_field_errors);
+          return;
+        }else{
+          setErrormsg(error.response.data.error.username);
+          return;
+        }
+      }
+      else{
+        setErrormsg(error.response.data.message);
+        return;
+      }
+    });
+    setIsSignedIn(true);
   };
 
   return (
@@ -47,8 +58,8 @@ const SignupPage = () => {
       <div className="background">
         <form onSubmit={onSubmitHandler}>
           <h3>Register Here</h3>
-          {isLoggedIn ? (
-            <p className="errormsg">123</p>
+          {isSignedIn ? (
+            <p className="errormsg">Registration Successful</p>
           ) : (
             <p className="errormsg">{errormsg}</p>
           )}
@@ -105,19 +116,19 @@ const SignupPage = () => {
                 name="contact_info"
                 required
               />
-              <label htmlFor="cnfrmpass">Confirm Password</label>
+              <label htmlFor="confirm_password">Confirm Password</label>
               <input
-                value={cnfrmpass}
+                value={confirm_password}
                 onChange={onChangeInput}
                 type="text"
                 placeholder="Enter Confirm Password"
-                id="cnfrmpass"
-                name="cnfrmpass"
+                id="confirm_password"
+                name="confirm_password"
                 required
               />
             </div>
           </div>
-          <button type="submit">Log In</button>
+          <button type="submit">Sign Up</button>
           <a href="/login">Already Registered? Sign-In</a>
         </form>
       </div>
