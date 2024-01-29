@@ -8,4 +8,3 @@ class RecipientsAdmin(admin.ModelAdmin):
     
 
 admin.site.register(Recipients,RecipientsAdmin)    
-

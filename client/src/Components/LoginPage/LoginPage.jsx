@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import "./LoginPage.css";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import Axios from "axios";
 
 const LoginPage = () => {
+  const navigate = useNavigate(); // Create a navigate function
+
+   
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -32,6 +36,7 @@ const LoginPage = () => {
     console.log(response.data.message);
     if(response.data.message=="Login successful"){
       setIsLoggedIn(true);
+      navigate("/user"); // Use navigate to go to the /user rout
     }else{
       setErrormsg(response.data.message)
     }

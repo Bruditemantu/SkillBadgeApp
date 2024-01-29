@@ -16,13 +16,21 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework.authtoken.views import obtain_auth_token
 import Organisation
 import Recipient
 import Authencation
+
+
+from django.conf import settings
+from django.conf.urls.static import static
+
 urlpatterns = [
+    path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
     path("admin/", admin.site.urls),
     path("api/auth/",include('Authencation.urls')),
     # path("api/user/",include('Recipient.urls')),
     path("api/org/",include('Organisation.urls')),
     path("api/recipient/",include('Recipient.urls')),
 ]
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])

@@ -3,18 +3,26 @@ from django.contrib.auth import authenticate, login
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
+from rest_framework.decorators import api_view
 from .serializers import *
 from django.shortcuts import render
 from .models import CustomUser
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework.authtoken.models import Token
+from rest_framework.permissions import AllowAny
+from rest_framework.authentication import TokenAuthentication
 from Utils.sendMail import send_custom_email
+
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
+
+
+
 
 
 class SignupPage(APIView):
+    permission_classes = [AllowAny]
     def post(self, request, *args, **kwargs):
         try:
             email = request.data.get("email")
@@ -43,7 +51,7 @@ class SignupPage(APIView):
             context = {"subject":f"Registration Successful! Welcome to the team {serializer.data.get('name')}",
                        "context_data":f"Dear {serializer.data.get('name')}, thank you for your registration with us."
                        }
-            send_custom_email(serializer.data.get("email"),context)
+            # send_custom_email(serializer.data.get("email"),context)
             return Response(
                 {
                     "status": True,
@@ -67,6 +75,8 @@ class SignupPage(APIView):
 
 @method_decorator(csrf_exempt, name="dispatch")
 class LoginPage(APIView):
+    
+    permission_classes = [AllowAny]
     def post(self, request, *args, **kwargs):
         try:
             username = request.data.get('username')
@@ -80,21 +90,20 @@ class LoginPage(APIView):
                     },
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-            
+         
             # print(authenticate(request, username="testuser1",password="delta2024!" ))
             user = authenticate(request, username=username, password=password)
-            
-            print(user)
+           
             if user is not None:
+                
                 login(request, user)
-                token, _ = Token.objects.get_or_create(user=user)
-
-                login
+                token, _ = Token.objects.get_or_create(user=user)     
                 return Response(
                     {
                         "token":token.key,
                         'success': True,
-                        'message': 'Login successful',
+                        'message': 'Login successful'
+                      
                 })
             else:
                 return Response(
@@ -115,3 +124,5 @@ class LoginPage(APIView):
                 },
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
+
+
