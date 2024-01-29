@@ -29,11 +29,12 @@ const LoginPage = () => {
       formData,
       config
     );
-    console.log(response.data.message);
-    if(response.data.message=="Login successful"){
+    console.log(response.data);
+    if (response.data.message == "Login successful") {
       setIsLoggedIn(true);
-    }else{
-      setErrormsg(response.data.message)
+      localStorage.setItem("token",response.data.token)
+    } else {
+      setErrormsg(response.data.message);
     }
   };
 
@@ -42,7 +43,11 @@ const LoginPage = () => {
       <div className="background">
         <form onSubmit={onSubmitHandler}>
           <h3>Login Here</h3>
-          {isLoggedIn ? <p className="errormsg">123</p> : <p className="errormsg">{errormsg}</p>}
+          {isLoggedIn ? (
+            <p className="errormsg">123</p>
+          ) : (
+            <p className="errormsg">{errormsg}</p>
+          )}
           <label htmlFor="username">Username</label>
           <input
             onChange={onChangeInput}

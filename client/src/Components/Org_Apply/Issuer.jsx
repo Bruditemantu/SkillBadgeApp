@@ -57,7 +57,7 @@ const Issuer = () => {
                 name="organisation_domain"
                 required
               />
-              <label htmlFor="organisation_size">organisation_size</label>
+              <label htmlFor="organisation_size">Organisation Size</label>
               <input
                 value={organisation_size}
                 onChange={onChangeInput}
