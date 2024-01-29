@@ -1,2 +1,4 @@
 .venv/
 server/skillBadge/testdb/
+/node_modules
+client/node_modules
