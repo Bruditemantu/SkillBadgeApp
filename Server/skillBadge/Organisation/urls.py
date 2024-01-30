@@ -6,5 +6,6 @@ urlpatterns = [
     path('crud/', BadgeDetailsAPIView.as_view(), name='badge-crud'),   
     path('apply_for_issuer/<int:id>/', EditIssuerDetails.as_view(), name='Apply_user'),
     path('delete/<int:id>/', DeleteIssuerDetails.as_view(), name='Delete_Issuser'),
+    path('verify/', VerifyBadgeAPIView.as_view(), name='Verify Badge'),
     
 ]

@@ -32,14 +32,14 @@ const LoginPage = () => {
     console.log(response.data);
     if (response.data.message == "Login successful") {
       setIsLoggedIn(true);
-      localStorage.setItem("token",response.data.token)
+      localStorage.setItem("token", response.data.token);
     } else {
       setErrormsg(response.data.message);
     }
   };
 
   return (
-    <>
+    <div className="login-body">
       <div className="background">
         <form onSubmit={onSubmitHandler}>
           <h3>Login Here</h3>
@@ -48,7 +48,7 @@ const LoginPage = () => {
           ) : (
             <p className="errormsg">{errormsg}</p>
           )}
-          <label htmlFor="username">Username</label>
+          <label className="label" htmlFor="username">Username</label>
           <input
             onChange={onChangeInput}
             value={username}
@@ -57,7 +57,7 @@ const LoginPage = () => {
             name="username"
             required
           />
-          <label htmlFor="password">Password</label>
+          <label className="label" htmlFor="password">Password</label>
           <input
             value={password}
             onChange={onChangeInput}
@@ -71,7 +71,7 @@ const LoginPage = () => {
           <a href="/register">Create a account</a>
         </form>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -27,7 +27,7 @@ class Issuer_Serializer(serializers.ModelSerializer):
 class BadgeAssignmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Badge_Assignment
-        fields = ['id','badge_id','recipient']          
+        fields = '__all__'          
 
 class GetBadgesSerializer(serializers.ModelSerializer): 
     assigned_users = UserSerializer(many=True)

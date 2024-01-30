@@ -10,7 +10,7 @@ from Authencation.models import CustomUser
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
 from Authencation.serializers import UserSerializer
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 
 # class BadgeAssignmentAPIView(APIView):
@@ -324,4 +324,29 @@ class DeleteIssuerDetails(APIView):
             return Response(
                 {"error": f"An unexpected error occurred: {str(e)}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+class VerifyBadgeAPIView(APIView):
+    permission_classes = [AllowAny]
+    def get(self,request):
+        try:
+            uvc = request.query_params.get("uvc")
+            verified_badge = Badge_Assignment.objects.get(verification_code=uvc)
+            view_badge = BadgeAssignmentSerializer(verified_badge)  
+            if view_badge:
+                badge_data = Badges.objects.get(pk=view_badge.data.get("badge_id"))
+                badge = BadgesSerializer(badge_data)
+                recipient_data = CustomUser.objects.get(pk=view_badge.data.get("recipient"))
+                recipient = UserSerializer(recipient_data)
+                return Response(
+                    {"msg":"Badge Verified",
+                     "assignment_data":view_badge.data,
+                     "badge_data":badge.data,
+                     "user_data":recipient.data,
+                     "verified":True},
+                     status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(
+                {"message":"Not a Valid Badge Assignment","error": f"An unexpected error occurred: {str(e)}"},
+                status=status.HTTP_404_NOT_FOUND,
             )
