@@ -52,11 +52,11 @@ class GetbyidDetail(APIView):
 class GetUser(APIView):
     
     
-    @permission_classes([IsAuthenticated])
-    @authentication_classes([TokenAuthentication])
+    # @permission_classes([IsAuthenticated])
+    # @authentication_classes([TokenAuthentication])
     def get(self, request):
-        user = request.user
-        serializer = GetUserDataSerializer(user) 
+        user = CustomUser.objects.all()
+        serializer = GetUserAll(user,many=True) 
         
         return Response({"user":serializer.data})
     

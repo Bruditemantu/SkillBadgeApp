@@ -30,7 +30,7 @@ class GetUserDataSerializer( serializers.ModelSerializer):
     class Meta:
         model  = CustomUser
         fields = [
-            'username', 'email'
+            'username', 'email','password',
         ]
         
 class GetUserAll( serializers.ModelSerializer):

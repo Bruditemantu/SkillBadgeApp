@@ -15,17 +15,16 @@ class CustomUserManager(BaseUserManager):
     def create_superuser(self, email, username, name, contact_info, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
-        extra_fields.setdefault('is_active',True) 
 
         return self.create_user(email, username, name, contact_info, password, is_org=True, **extra_fields)
-
-
 class CustomUser(AbstractBaseUser,PermissionsMixin):
 
     email = models.EmailField(unique=True)
     username = models.CharField(max_length=30, unique = True)
     name = models.CharField(max_length=255)
-     
+    is_org = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
     name = models.CharField(max_length=100, null=True, blank=True)
     contact_info = PhoneNumberField(blank=True, null=True)
     organisation = models.CharField(max_length=100, null=True, blank=True)
@@ -33,10 +32,10 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
     organisation_size = models.IntegerField(null=True, blank=True)
     badges_and_types = models.TextField(null=True, blank=True)
     is_verified = models.BooleanField(default=False)
-    
-    
 
-    def __str__(self):
+
+
+    def str(self):
         return self.username
 
 
@@ -47,5 +46,3 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
 
     def str(self):
         return self.username 
-
-# Create your models here.
