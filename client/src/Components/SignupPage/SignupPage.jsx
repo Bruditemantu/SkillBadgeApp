@@ -1,11 +1,10 @@
-import { useState } from "react";
-import React from "react";
-import "./SignupPage.css";
+import React, { useState } from "react";
 import Axios from "axios";
-import {useNavigate} from "react-router-dom"
+import InputField from "../InputField";
+import CustomBtn from "../CustomBtn";
+import { useNavigate } from "react-router-dom";
 
-const SignupPage = () => {
-
+const SignUpPage = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -37,9 +36,9 @@ const SignupPage = () => {
     await Axios.post("http://127.0.0.1:8000/api/auth/signup/", formData, config)
       .then((response) => {
         console.log(response.data);
-        if (response.data.message === "Successfully Registered.") {
+        if (response.data.message == "Successfully Registered.") {
           setIsSignedIn(true);
-          navigate('/login', { replace: true });
+          navigate("/login", { replace: true });
         }
       })
       .catch((error) => {
@@ -61,85 +60,109 @@ const SignupPage = () => {
 
   return (
     <>
-      <div className="background">
-        <form onSubmit={onSubmitHandler}>
-          <h3>Register Here</h3>
+      <div className=" bg-[#121212] flex items-center justify-center h-max p-20 ">
+        <div className="bg-[#161616] p-8 rounded shadow-md w-3/4 lg:w-2/4">
+          <h2 class="text-xl  font-medium text-white text-center mb-4  font-roboto tracking-wider">
+            CREATE ACCOUNT
+          </h2>
           {isSignedIn ? (
-            <p className="errormsg">Registration Successful</p>
+            <p className="text-red-500 font-semibold text-center mb-2 text-sm tracking-wider text-md p-1">
+              Registration Successful
+            </p>
           ) : (
-            <p className="errormsg">{errormsg}</p>
+            <p className="text-red-500 font-semibold text-center mb-2 text-sm tracking-wider text-md p-1">
+              {errormsg}
+            </p>
           )}
-          <div className="form-feilds">
-            <div className="left">
-              <label htmlFor="username">Name</label>
-              <input
-                onChange={onChangeInput}
+          <form onSubmit={onSubmitHandler} className="flex  space-x-4 flex-wrap justify-center  ">
+            <div class="mb-4 w-56 ml-4">
+              <InputField
                 value={name}
+                onChange={onChangeInput}
+                label="Name"
                 type="text"
-                placeholder="Enter Name"
+                id="name"
+                placeholder="Rahul"
                 name="name"
-                required
-              />
-              <label htmlFor="email">Email</label>
-              <input
-                value={email}
-                onChange={onChangeInput}
-                type="email"
-                placeholder="Enter Email"
-                id="email"
-                name="email"
-                required
-              />
-              <label htmlFor="password">Password</label>
-              <input
-                value={password}
-                onChange={onChangeInput}
-                type="password"
-                placeholder="Enter Password"
-                id="password"
-                name="password"
-                required
               />
             </div>
-            <div className="right">
-              <label htmlFor="username">Username</label>
-              <input
+
+            <div class="mb-4 w-56">
+              <InputField
                 value={username}
                 onChange={onChangeInput}
+                label="Username"
                 type="text"
-                placeholder="Enter Username"
                 id="username"
+                placeholder="rahul@917"
                 name="username"
-                required
-              />
-              <label htmlFor="contact_info">Contact Info</label>
-              <input
-                value={contact_info}
-                onChange={onChangeInput}
-                type="text"
-                placeholder="Enter Contact Info"
-                id="contact_info"
-                name="contact_info"
-                required
-              />
-              <label htmlFor="confirm_password">Confirm Password</label>
-              <input
-                value={confirm_password}
-                onChange={onChangeInput}
-                type="text"
-                placeholder="Enter Confirm Password"
-                id="confirm_password"
-                name="confirm_password"
-                required
               />
             </div>
+
+            <div class="mb-4 w-56 ">
+              <InputField
+                value={email}
+                onChange={onChangeInput}
+                label="Email"
+                type="email"
+                id="email"
+                placeholder="rahulbharadia917@gmail.com"
+                name="email"
+              />
+            </div>
+
+            <div class="mb-4 w-56 ">
+              <InputField
+                value={contact_info}
+                onChange={onChangeInput}
+                label="Contact Number"
+                type="phone-pad"
+                id="contact_info"
+                placeholder="+91-9876543210"
+                name="contact_info"
+              />
+            </div>
+
+            <div class="mb-4 w-56 ">
+              <InputField
+                value={password}
+                onChange={onChangeInput}
+                label="Password"
+                type="password"
+                id="password"
+                name="password"
+              />
+            </div>
+
+            <div class="mb-4 w-56 ">
+              <InputField
+                value={confirm_password}
+                onChange={onChangeInput}
+                label="Confirm Password"
+                type="password"
+                id="confirm_password"
+                name="confirm_password"
+              />
+            </div>
+            <div className="w-60 flex justify-center">
+              <CustomBtn type="submit" label="Create Account" />
+            </div>
+          </form>
+          <div className="flex flex-row mt-3 justify-center semibold font-roboto text-white gap-1">
+            <p>Already a User ?</p>
+            <span className="text-white mr-2">
+              <a
+                href="/"
+                className="hover:text-teal-600 border-b-2   hover:border-teal-600"
+              >
+                Login
+              </a>
+            </span>
           </div>
-          <button type="submit">Sign Up</button>
-          <a href="/login">Already Registered? Sign-In</a>
-        </form>
+        </div>
       </div>
     </>
   );
 };
 
-export default SignupPage;
+export default SignUpPage;

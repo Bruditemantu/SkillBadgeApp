@@ -3,7 +3,7 @@ import Axios from 'axios';
 import InputField from "../InputField";
 import CustomBtn from "../CustomBtn";
 
-const Issuer = () => {
+const Apply_for_Org = () => {
   const [formData, setFormData] = useState({
     Organisation_Name: "",
     organisation_domain: "",
@@ -27,19 +27,19 @@ const Issuer = () => {
       },
     };
     const response = await Axios.post(
-      "http://127.0.0.1:8000/api/org/apply_for_issuer",
+      "http://127.0.0.1:8000/api/org/apply_for_org",
       formData,
       config
     );
     console.log(response.data);
   };
 
-   return (
+  return (
     <>
       <div className=" bg-[#121212] flex items-center justify-center h-screen">
         <div className="bg-[#161616] p-8 rounded shadow-md w-3/4 lg:w-2/4">
           <h2 class="text-xl  font-medium text-white text-center mb-4 font-roboto tracking-wider">
-            Edit Details
+            Apply For Organisation
           </h2>
           <form className="flex  space-x-4 flex-wrap justify-center ">
             <div class="mb-4 w-60 ">
@@ -101,5 +101,4 @@ const Issuer = () => {
     </>
   );
 };
-
-export default Issuer;
+export default Apply_for_Org;

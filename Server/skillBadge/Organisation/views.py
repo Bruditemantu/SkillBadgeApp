@@ -219,11 +219,13 @@ class EditIssuerDetails(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     
+    
     def get(self, request, id=None):
         try:
+            user_id = request.user.id
             
-            if id:
-                issuer = get_object_or_404(CustomUser, id=id)
+            if user_id:
+                issuer = get_object_or_404(CustomUser, id=user_id)
                 serializer = Issuer_Serializer(instance=issuer)
                 return Response({"data": serializer.data})
 
@@ -287,6 +289,55 @@ class EditIssuerDetails(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
        
+       
+class ApplyOrg(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+    
+
+    def patch(self, request):
+        try:
+            user = request.user
+            # serializer = UpdateUserSerializer(instance=user, data=request.data, partial=True)
+            # issuer = get_object_or_404(CustomUser, id=id)
+            
+            serializer = Issuer_Serializer(instance=user, data=request.data, partial=True)
+
+            if serializer.is_valid():
+                serializer.save()
+                user.refresh_from_db()
+                return Response(
+                    {
+                        "data": serializer.data,
+                        "status": True,
+                        "status_code": 201,
+                        "message": "Successfully Registered",
+                    }
+                )
+            else:
+                return Response(
+                    {
+                        "status": False,
+                        "status_code": 400,
+                        "message": "Cannot Register",
+                        "error": serializer.errors,
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+        except CustomUser.DoesNotExist:
+            return Response(
+                {"msg": "User not found"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        except Exception as e:
+            return Response(
+                {"error": f"An unexpected error occurred: {str(e)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+       
+
 
 
 class DeleteIssuerDetails(APIView):
