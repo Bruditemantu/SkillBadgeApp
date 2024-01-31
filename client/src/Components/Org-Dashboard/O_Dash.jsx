@@ -221,8 +221,8 @@ function O_Dash() {
           <div className="texte pt-2 mt-4 bg-[#161616]  rounded-lg">
             <h2 class="text-center mt-3 font-bold text-white bg-[#161616] ">Badges</h2>
           </div>
-          <div className="badges flex h-3/4 mt-12 max-lg:flex-col max-lg:items-center max-lg:my-1">
-            {badgedata.slice(0, 3).map((badge, index) => (
+          <div className="badges flex h-3/4 mt-12  max-lg:flex-col mx-60 max-lg:items-center max-lg:my-1">
+            {badgedata.slice(0,4).map((badge, index) => (
               <div
                 key={index}
                 className="firstbadge1  flex my-4 w-1/2 h-3/4 justify-center rounded-md m-2"

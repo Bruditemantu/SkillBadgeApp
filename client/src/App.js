@@ -9,7 +9,8 @@ import EditBadge from "./Components/Org-Dashboard/EditBadge";
 
 //organisation 
 import AssignBadge from "./Components/Org-Dashboard/AssignBadge";
-import SingleBadge from "./Components/Org-Dashboard/SingleBadge/SingleBadge";
+import SingleBadgeOrg from "./Components/Org-Dashboard/SingleBadge/SingleBadgeOrg";
+
 import VerifyBadge from "./Components/Org-Dashboard/VerifyBadge";
 import O_Dash from "./Components/Org-Dashboard/O_Dash";
 import EditProfile from "./Components/EditProfile/EditProfile";
@@ -21,11 +22,13 @@ import UserEditProfile from "./Components/User-Dash/UserEditProfile";
 import UserProfile from "./Components/User-Dash/UserProfile";
 import UserAllBadges from "./Components/User-Dash/UserAllBadges";
 import CreateBadge from "./Components/Org-Dashboard/CreateBadge";
+import SignUpPage from "./Components/SignupComponent/SignUpPage";
 
 import { useEffect } from "react";
 
 import "aos/dist/aos.css";
-import SignUpPage from "./Components/SignupComponent/SignUpPage";
+
+import SingleBadge from "./Components/User-Dash/SingleBadge";
 
 
 function App() {
@@ -63,7 +66,8 @@ function App() {
         
         
        
-        <Route path="/singlebadge" element={<SingleBadge/>}/>
+        <Route path="/singlebadge/:id" element={<SingleBadge/>}/>
+        <Route path="/singlebadgeorg/:id" element={<SingleBadgeOrg/>}/>
         <Route path="/verify-badge/:id" element={<VerifyBadge/>}/>
         
       </Routes>

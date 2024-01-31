@@ -1,41 +1,43 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
+import Axios from 'axios';
+import { useParams } from "react-router-dom";
+import profileimage from './images/profileimage.png';
 import { useNavigate } from 'react-router-dom';
-// import './UserAllBadges.css';
-import Axios  from 'axios';
-import { useState ,useEffect } from 'react';
-import AOS from "aos";
-import "aos/dist/aos.css";
-import profileimage from './images/profileimage.png'
 
-
-const UserAllBadges = () => {
-    const navigate = useNavigate();
+const SingleBadge = () => {
+  const badge_id = useParams();
+  const navigate = useNavigate();
     
-    const [userData, setUserData] = useState([]); // Initialize as an empty array
-    useEffect(() => {
-        
-      const fetchUserData = async () => {
-        try {
-          const response = await Axios.get("http://127.0.0.1:8000/api/recipient/allbadges/", {
-            headers: {
-              Authorization: `token ${localStorage.getItem('token')}`, // Replace with your authentication token
-            },
-          });
-          
-          setUserData(response.data);
-          
-        } catch (error) {
-          console.error('Error fetching user data:', error);
-        }
-      };
 
-      fetchUserData();
-      console.log(userData);
-      console.log(userData.image_url);
-      
-      
-      
+  const [userDataData, setuserData] = useState({
+    id:"",
+    name:"",
+    description:"",
+    criteria:"",
+    image_url:"",
+    date_created:"",
+    expiration_durations:0,
+  });
+
+  useEffect(() => {
+    const fetchuserDataData = async (badgeId) => {
+      try {
+        const response = await Axios.get(`http://127.0.0.1:8000/api/org/crud/?badge_id=${badge_id.id}`, {
+          headers: {
+            Authorization: `token ${localStorage.getItem('token')}`, // Replace with your authentication token
+          },
+        });
+        console.log(response.data.data.id);
+        setuserData(response.data.data);
+      } catch (error) {
+        console.error('Error fetching userData data:', error);
+      }
+    };
+
+    // Call the function to fetch userData data
+    fetchuserDataData();
   }, []);
+
 
   const [user, setUser] = useState({
     email: '',
@@ -59,28 +61,11 @@ const UserAllBadges = () => {
     UserData();
     
 }, []);
-const handleSingleBadge = async (badgeId) => {
-  navigate(`/singlebadge/${badgeId}`);
-  
-};
-
-
-
-
-useEffect(()=>{
-  AOS.init({
-    offset: 200,
-    duration: 600,
-    easing: 'ease-in-sine',
-    delay: 100,
-  });
-})
 
   return (
-    
-    <div className="container m-auto  my-1 flex justify-center max-lg:flex-wrap">
-    
-    <div className="leftrectangle  text-gray-300 bg-[#121212] w-1/4 m-1 rounded-md shadow-slate-600 max-lg:w-4/5" data-aos="slide-right" >
+    <>
+     <div className="contain m-auto  h-full flex justify-center max-lg:flex-wrap">
+     <div className="leftrectangle  text-gray-300 bg-[#121212] w-1/4 m-1 rounded-md shadow-slate-600 max-lg:w-4/5" data-aos="slide-right" >
       <div className="profileimage w-2/5 mt-10 rounded-full  bg-slate-300 max-lg:w-3/4 m-auto">
         <img className= "rounded-full" src={profileimage} alt="image"/>
        </div>
@@ -146,27 +131,50 @@ useEffect(()=>{
        
     </div>
 
-       <div className='rightrectanglebadge  bg-[#121212] m-1 w-3/4 rounded-md  items-center max-lg:w-4/5'>
-        <div className='leftdisplay '>
-          
-        {userData.map((badge, index) => (
-          <div key={index} className='firstbadge1 flex justify-between text-white m-1 uppercase items-center h-10 w-3/4 bg-[#181818] rounded-md p-3 mt-32 ml-20  max-lg:flex-col max-lg:h-2/3 max-lg:w-1/2 max-lg:my-5' onClick={() => handleSingleBadge(badge.id)} >
-             <img className= "badgeimage -mx-12 max-lg:w-3/4  p-2 max-lg:h-3/4"src={`http://127.0.0.1:8000${badge.image_url}`} alt={`badge_${index}`} width={'160px'} height={'160px'}   data-aos= "flip-right"/>
-             
-           <p>{badge.name}</p>
-            <p>{badge.date_created}</p>
-            {/* <p>{badge.description}</p> */}
-            <p>{badge.expiration_durations}</p>
+   
+      <div className="h-[100px] bg-slate-200"></div>
+      <div className="bg-[#121212] flex justify-center lg:h-3/6 md:p-28 lg:p-16">
+        <div className="bg-[#161616] p-8 rounded flex flex-col lg:flex-row shadow-md gap-2 lg:w-4/5">
+          <div className="lg:w-1/2 flex justify-center items-center lg:border-r-2">
+            <div className="w-5/12">
+              <img src={`http://127.0.0.1:8000${userDataData.image_url}`}  alt="Badge-Check" />
+            </div>
           </div>
-        ))}
-      
-        </div>
-       
-        
-    </div>
-      
-    </div>
-  )
-}
 
-export default UserAllBadges
+          <div className="ml-2 text-center lg:text-left lg:w-1/2">
+            <div className="text-white">
+              <h2 className="lg:text-3xl mb-3 font-semibold tracking-wider">
+                Badge Details
+              </h2>
+              
+                
+                  <p className="mb-2 font-roboto tracking-wider text-sm">
+                    ID: {userDataData.id}
+                  </p>
+                  <p className="mb-2 font-roboto tracking-wider text-sm">
+                    Name: {userDataData.name}
+                  </p>
+                  <p className="mb-2 font-roboto tracking-wider text-sm">
+                    Description: {userDataData.description}
+                  </p>
+                  <p className="mb-2 font-roboto tracking-wider text-sm">
+                    Criteria: {userDataData.criteria}
+                  </p>
+                  <p className="mb-2 font-roboto tracking-wider text-sm">
+                    Date Created: {userDataData.date_created}
+                  </p>
+                  <p className="mb-2 font-roboto tracking-wider text-sm">
+                    Expiration Durations: {userDataData.expiration_durations}
+                  </p>
+                
+              
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+    </>
+  );
+};
+
+export default SingleBadge;
