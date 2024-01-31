@@ -7,3 +7,6 @@ class BadgesAdmin(admin.ModelAdmin):
 class Badge_AssignmentsAdmin(admin.ModelAdmin):
     list_display=("badge_id","unique_verification_code")
     
+
+admin.site.register(Badges,BadgesAdmin)
+admin.site.register(Badge_Assignment)

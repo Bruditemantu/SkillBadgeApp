@@ -17,8 +17,6 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault('is_superuser', True)
 
         return self.create_user(email, username, name, contact_info, password, is_org=True, **extra_fields)
-
-
 class CustomUser(AbstractBaseUser,PermissionsMixin):
 
     email = models.EmailField(unique=True)
@@ -38,7 +36,9 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
     
     
 
-    def __str__(self):
+
+
+    def str(self):
         return self.username
 
 
@@ -49,5 +49,3 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
 
     def str(self):
         return self.username 
-
-# Create your models here.

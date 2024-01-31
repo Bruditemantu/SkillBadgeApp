@@ -5,7 +5,7 @@ from Recipient.views import GetBadgesView, AllUsers, GetbyidDetail,GetUser,UserU
 from django.conf import settings
 from django.conf.urls.static import static
 
-
+    
 urlpatterns = [
     path('getbadge/',GetBadgesView.as_view()),
     path('getid/<int:user_id>/',GetbyidDetail.as_view()),
@@ -13,5 +13,5 @@ urlpatterns = [
     path('userdetail/',GetUser.as_view()),
     path('update-user/', UserUpdate.as_view(), name='update_user'),
     path('allbadges/', AllBadges.as_view(), name='allbages'),
-
+    
 ]

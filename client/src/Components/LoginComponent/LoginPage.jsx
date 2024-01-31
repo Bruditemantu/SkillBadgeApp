@@ -2,8 +2,12 @@ import React, { useState } from "react";
 import Axios from "axios";
 import InputField from "../Utils/InputField";
 import CustomBtn from "../Utils/CustomBtn";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
+
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -34,6 +38,11 @@ const LoginPage = () => {
     if (response.data.message == "Login successful") {
       setIsLoggedIn(true);
       localStorage.setItem("token", response.data.token);
+      if(response.data.is_org == true){
+        navigate("/orgdash", { replace: true });
+      }else{
+        navigate("/user/profile", { replace: true });
+      }
     } else {
       setErrormsg(response.data.message);
     }

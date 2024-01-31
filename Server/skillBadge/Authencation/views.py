@@ -13,6 +13,12 @@ from rest_framework.permissions import AllowAny
 from rest_framework.authentication import TokenAuthentication
 from Utils.sendMail import send_custom_email
 
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
+
+
+
 
 
 class SignupPage(APIView):
@@ -45,7 +51,7 @@ class SignupPage(APIView):
             context = {"subject":f"Registration Successful! Welcome to the team {serializer.data.get('name')}",
                        "context_data":f"Dear {serializer.data.get('name')}, thank you for your registration with us."
                        }
-            send_custom_email(serializer.data.get("email"),context)
+            # send_custom_email(serializer.data.get("email"),context)
             return Response(
                 {
                     "status": True,
@@ -69,6 +75,7 @@ class SignupPage(APIView):
 
 @method_decorator(csrf_exempt, name="dispatch")
 class LoginPage(APIView):
+    
     permission_classes = [AllowAny]
     def post(self, request, *args, **kwargs):
         try:
@@ -83,25 +90,20 @@ class LoginPage(APIView):
                     },
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-            
+         
             # print(authenticate(request, username="testuser1",password="delta2024!" ))
             user = authenticate(request, username=username, password=password)
-           
-            
-            
             if user is not None:
                 
                 login(request, user)
-                token, _ = Token.objects.get_or_create(user=user)
-
+                token, _ = Token.objects.get_or_create(user=user) 
                
-             
                 return Response(
                     {
                         "token":token.key,
                         'success': True,
-                        'message': 'Login successful'
-                      
+                        'message': 'Login successful',
+                        "is_org": user.is_org
                 })
             else:
                 return Response(
@@ -122,3 +124,5 @@ class LoginPage(APIView):
                 },
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
+
+

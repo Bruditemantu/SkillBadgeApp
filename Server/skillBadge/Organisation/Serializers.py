@@ -44,7 +44,7 @@ class Apply_Serializer(serializers.ModelSerializer):
             'organisation_domain',
             'organisation_size',
             'badges_and_types',
-             'documents',
+            
             
         ]
         

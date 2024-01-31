@@ -51,7 +51,7 @@ const SuccessPopup = ({ onClose }) => (
       <div className="bg-[#121212] flex items-center justify-center h-screen">
         <div className="bg-[#161616] p-8 rounded shadow-md w-3/4 lg:w-2/4">
           <h2 className="text-xl font-medium text-white text-center mb-4 font-roboto tracking-wider">
-            Apply For Organisation
+            Edit Details
           </h2>
           <form onSubmit={onSubmitHandler} className="flex space-x-4 flex-wrap justify-center " enctype="multipart/form-data">
             <div className="mb-4 w-60 ">

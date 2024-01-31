@@ -2,17 +2,30 @@ import React, { useState } from 'react';
 import Axios from 'axios';
 import InputField from "../InputField";
 import CustomBtn from "../CustomBtn";
+import { useNavigate } from 'react-router-dom';
 
 const Apply_for_Org = () => {
+
+  const navigate = useNavigate()
+
   const [formData, setFormData] = useState({
     organisation: "",
     organisation_domain: "",
     organisation_size: "",
     badges_and_types: "",
-    documents: null,
+   
   });
+  
+const [showSuccessPopup, setShowSuccessPopup] = useState(false); // New state
 
-  const { organisation, organisation_domain, organisation_size, badges_and_types, documents } = formData;
+  const SuccessPopup = ({ onClose }) => (
+    <div className="bg-green text-white">
+      <p>Form submitted successfully!</p>
+      
+    </div>
+  );
+
+  const { organisation, organisation_domain, organisation_size, badges_and_types } = formData;
 
   const onChangeInput = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -32,6 +45,9 @@ const Apply_for_Org = () => {
       config
     );
     console.log(response.data);
+    alert("donw pls wait for verification");
+    navigate("/user/profile")
+    // setShowSuccessPopup(true);
   };
 
   return (
@@ -89,23 +105,13 @@ const Apply_for_Org = () => {
                 name="badges_and_types"
               />
             </div>
-            <div className="mb-4 w-60">
-              <InputField
-                value={documents}
-                onChange={onChangeInput}
-                label="Document"
-                type="file"
-                accept=".pdf, .doc, .docx"
-                id="documents"
-                placeholder="Enter Document"
-                name="documents"
-              />
-            </div>
+       
 
             <div className='mb-4 w-60 flex justify-center'>
               <CustomBtn type="submit" label="Submit" />
             </div>
           </form>
+          {showSuccessPopup && <SuccessPopup onClose={() => setShowSuccessPopup(false)} />}
         </div>
       </div>
     </>

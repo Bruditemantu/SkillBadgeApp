@@ -3,6 +3,7 @@ from django.db import models
 from datetime import datetime
 from Recipient.models import *
 from Authencation.models import *
+from datetime import datetime
 # from phonenumber_field.modelfields import PhoneNumberField
 
 # Create your models here.
@@ -21,4 +22,7 @@ class Badge_Assignment(models.Model):
     badge_id = models.ForeignKey(Badges,on_delete=models.CASCADE)
     recipient=models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     verification_code = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
-        
+    
+    def __str__(self):
+        return self.recipient.username
+    

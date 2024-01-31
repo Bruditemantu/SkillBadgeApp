@@ -52,11 +52,11 @@ class GetbyidDetail(APIView):
 class GetUser(APIView):
     
     
-    @permission_classes([IsAuthenticated])
-    @authentication_classes([TokenAuthentication])
+    # @permission_classes([IsAuthenticated])
+    # @authentication_classes([TokenAuthentication])
     def get(self, request):
-        user = request.user
-        serializer = GetUserDataSerializer(user) 
+        user = CustomUser.objects.all()
+        serializer = GetUserAll(user,many=True) 
         
         return Response({"user":serializer.data})
     
@@ -138,3 +138,6 @@ class AllBadges(APIView):
             return Response(serializer.data)
         except CustomUser.DoesNotExist:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+
+

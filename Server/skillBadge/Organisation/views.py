@@ -17,10 +17,21 @@ from Utils.sendMail import send_custom_email
 class BadgeAssignmentAPIView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
+   
     def post(self, request):
         try:
+            user = request.user
+            if not user.is_org:
+                return Response(
+                    {  
+                        "status": False,
+                        "status_code": 404,
+                        "message": "Organization not found",
+                    },
+                    status=status.HTTP_404_NOT_FOUND,
+                )
             badge_assigned = Badge_Assignment.objects.filter(
-                badge_id=request.data.get("badge_id"), recipient_id=request.data.get("recipient")
+            badge_id=request.data.get("badge_id"), recipient_id=request.data.get("recipient")
             )
             if badge_assigned:
                 return Response(
@@ -49,10 +60,21 @@ class BadgeAssignmentAPIView(APIView):
 
 class BadgeDetailsAPIView(APIView):
     # create a badge    
+  
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     def post(self, request):
         try:
+            user = request.user
+            if not user.is_org:
+                return Response(
+                    {  
+                        "status": False,
+                        "status_code": 404,
+                        "message": "Organization not found",
+                    },
+                    status=status.HTTP_404_NOT_FOUND,
+                )
             print(request.user.id,request.user.email)
             data = request.data
             data["org_id"]=request.user.id
@@ -76,6 +98,16 @@ class BadgeDetailsAPIView(APIView):
     # fetch badge data with the users it is assigned to
     def get(self, request):
         try:
+            user = request.user
+            if not user.is_org:
+                return Response(
+                    {  
+                        "status": False,
+                        "status_code": 404,
+                        "message": "Organization not found",
+                    },
+                    status=status.HTTP_404_NOT_FOUND,
+                )
             user = get_user(request)
             print(user)
             badge_id = request.query_params.get("badge_id")
@@ -110,6 +142,16 @@ class BadgeDetailsAPIView(APIView):
     # delete a badge
     def delete(self, request):
         try:
+            user = request.user
+            if not user.is_org:
+                return Response(
+                    {  
+                        "status": False,
+                        "status_code": 404,
+                        "message": "Organization not found",
+                    },
+                    status=status.HTTP_404_NOT_FOUND,
+                )
             badge_id = request.query_params.get("badge_id")
             if badge_id:
                 badge_to_delete = Badges.objects.get(pk=badge_id)
@@ -130,8 +172,18 @@ class BadgeDetailsAPIView(APIView):
     # update a badge
     def put(self, request):
         try:
+            user = request.user
+            if not user.is_org:
+                return Response(
+                    {  
+                        "status": False,
+                        "status_code": 404,
+                        "message": "Organization not found",
+                    },
+                    status=status.HTTP_404_NOT_FOUND,
+                )
             data = request.data
-            badge_id = data.get("id")
+            badge_id = request.query_params.get("badge_id")
             existing_badge = Badges.objects.get(pk=badge_id)
             serial = BadgesSerializer(existing_badge, data=data)
             
@@ -168,7 +220,17 @@ class EditIssuerDetails(APIView):
     
     def get(self, request, id=None):
         try:
+            user = request.user
             user_id = request.user.id
+            if not user.is_org:
+                return Response(
+                    {  
+                        "status": False,
+                        "status_code": 404,
+                        "message": "Organization not found",
+                    },
+                    status=status.HTTP_404_NOT_FOUND,
+                )
             print(request.user.name)
             if user_id:
                 issuer = get_object_or_404(CustomUser, id=user_id)
@@ -246,13 +308,8 @@ class ApplyOrg(APIView):
     def patch(self, request):
         try:
             user = request.user
-            documents_file = request.data.get('documents')
+            
 
-        # Handle 'documents' separately if it exists in request.data
-            if documents_file:
-                user.documents = documents_file
-                user.save()
-            # serializer = UpdateUserSerializer(instance=user, data=request.data, partial=True)
             # issuer = get_object_or_404(CustomUser, id=id)
             print(request.data)
             serializer = Apply_Serializer(instance=user, data=request.data, partial=True)
@@ -296,6 +353,15 @@ class ApplyOrg(APIView):
 class DeleteIssuerDetails(APIView):
     def patch(self, request, id=None):
         try:
+            if not user.is_org:
+                return Response(
+                    {  
+                        "status": False,
+                        "status_code": 404,
+                        "message": "Organization not found",
+                    },
+                    status=status.HTTP_404_NOT_FOUND,
+                )
             issuer = get_object_or_404(CustomUser, id=id)
             serializer = Issuer_Serializer(instance=issuer, data=request.data, partial=True)
 
