@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
 import React from "react";
-import "./SignupPage.css";
+// import "./SignupPage.css";
 import Axios from "axios";
 import AOS from 'aos'
 import "aos/dist/aos.css";
+import {useNavigate} from "react-router-dom"
+
 const SignupPage = () => {
+
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -14,13 +19,11 @@ const SignupPage = () => {
     confirm_password: "",
   });
 
-  useEffect(()=>{
-    AOS.init();
-  })
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isSignedIn, setIsSignedIn] = useState(false);
   const [errormsg, setErrormsg] = useState("");
 
-  const { username, password, name, email,contact_info,confirm_password } = formData;
+  const { username, password, name, email, contact_info, confirm_password } =
+    formData;
 
   const onChangeInput = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -33,17 +36,29 @@ const SignupPage = () => {
         "Content-Type": "application/json",
       },
     };
-    const response = await Axios.post(
-      "http://127.0.0.1:8000/api/auth/signup/",
-      formData,
-      config
-    );
-    console.log(response.data.message);
-    if (response.data.message == "Login successful") {
-      setIsLoggedIn(true);
-    } else {
-      setErrormsg(response.data.message);
-    }
+    await Axios.post("http://127.0.0.1:8000/api/auth/signup/", formData, config)
+      .then((response) => {
+        console.log(response.data);
+        if (response.data.message == "Successfully Registered.") {
+          setIsSignedIn(true);
+          navigate('/login', { replace: true });
+        }
+      })
+      .catch((error) => {
+        // console.log(error.response.data);
+        if (error.response.data.message == "Invalid Credentials") {
+          if (error.response.data.error.hasOwnProperty("non_field_errors")) {
+            setErrormsg(error.response.data.error.non_field_errors);
+            return;
+          } else {
+            setErrormsg(error.response.data.error.username);
+            return;
+          }
+        } else {
+          setErrormsg(error.response.data.message);
+          return;
+        }
+      });
   };
 
   return (
@@ -51,8 +66,8 @@ const SignupPage = () => {
       <div className="background">
         <form onSubmit={onSubmitHandler}>
           <h3>Register Here</h3>
-          {isLoggedIn ? (
-            <p className="errormsg">123</p>
+          {isSignedIn ? (
+            <p className="errormsg">Registration Successful</p>
           ) : (
             <p className="errormsg">{errormsg}</p>
           )}
@@ -121,7 +136,7 @@ const SignupPage = () => {
               />
             </div>
           </div>
-          <button type="submit">Log In</button>
+          <button type="submit">Sign Up</button>
           <a href="/login">Already Registered? Sign-In</a>
         </form>
       </div>

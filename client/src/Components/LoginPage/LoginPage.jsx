@@ -33,23 +33,29 @@ const LoginPage = () => {
       formData,
       config
     );
-    console.log(response.data.message);
-    if(response.data.message=="Login successful"){
+    console.log(response.data);
+    if (response.data.message == "Login successful") {
+    
       setIsLoggedIn(true);
-      navigate("/user"); // Use navigate to go to the /user rout
-    }else{
-      setErrormsg(response.data.message)
+      localStorage.setItem("token", response.data.token);
+      navigate("/user");
+    } else {
+      setErrormsg(response.data.message);
     }
   };
 
 
   return (
-    <>
+    <div className="login-body">
       <div className="background">
-        <form onSubmit={onSubmitHandler}>
+        <form onSubmit={onSubmitHandler} >
           <h3>Login Here</h3>
-          {isLoggedIn ? <p className="errormsg">123</p> : <p className="errormsg">{errormsg}</p>}
-          <label htmlFor="username">Username</label>
+          {isLoggedIn ? (
+            <p className="errormsg">123</p>
+          ) : (
+            <p className="errormsg">{errormsg}</p>
+          )}
+          <label className="label" htmlFor="username">Username</label>
           <input
             onChange={onChangeInput}
             value={username}
@@ -58,7 +64,7 @@ const LoginPage = () => {
             name="username"
             required
           />
-          <label htmlFor="password">Password</label>
+          <label className="label" htmlFor="password">Password</label>
           <input
             value={password}
             onChange={onChangeInput}
@@ -72,7 +78,7 @@ const LoginPage = () => {
           <a href="/register">Create a account</a>
         </form>
       </div>
-    </>
+    </div>
   );
 };
 

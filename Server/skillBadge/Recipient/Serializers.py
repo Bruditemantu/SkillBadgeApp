@@ -45,8 +45,15 @@ class UpdateUserSerializer(serializers.ModelSerializer):
         
     class Meta:
         model = CustomUser
-        fields = ["email", "username", "password", "confirm_password" ,'contact_info','name']
-        
+        fields = ["email", "username", "password", "confirm_password" ,'contact_info','name' ,'organisation', 'organisation_domain','organisation_size','badges_and_types']
+   
+    
+
+class CustomUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'username', 'email', 'name']
+     
 class AllBadgesSerializer(serializers.ModelSerializer):
     badge_id = serializers.IntegerField(source='badge_id.id') 
     name = serializers.CharField(source='badge_id.name')
@@ -55,8 +62,9 @@ class AllBadgesSerializer(serializers.ModelSerializer):
     image_url = serializers.ImageField(source='badge_id.image_url', read_only=True)  
     date_created = serializers.DateField(source='badge_id.date_created', read_only=True)
     expiration_durations = serializers.IntegerField(source='badge_id.expiration_durations')
+    assigned_users = CustomUserSerializer(many=True, read_only=True, source='badge_id.assigned_users')
 
     class Meta:
         model = Badge_Assignment
-        fields = ['id', 'badge_id', 'name', 'description', 'criteria', 'image_url', 'date_created', 'expiration_durations']
+        fields = ['id', 'badge_id', 'name', 'description', 'criteria', 'image_url', 'date_created', 'expiration_durations','assigned_users']
    

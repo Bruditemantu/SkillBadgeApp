@@ -33,6 +33,12 @@ function NavBar() {
     setMenuOpen((p) => !p);
   };
 
+  const jumpToReleventDiv = (id) => {
+    const releventDiv = document.getElementById(id);
+    // behavior: "smooth" parameter for smooth movement
+    releventDiv.scrollIntoView({behavior: "smooth"});
+  }
+
   return (
     <header className="header">
       <div className="header__content">
@@ -52,7 +58,7 @@ function NavBar() {
               <Link to="/">Home</Link>
             </li>
             <li>
-              <Link to="/profile">About Us</Link>
+              <Link to="/#about"  >About Us</Link>
             </li>
             <li>
               <Link to="/Works">Contact Us</Link>
