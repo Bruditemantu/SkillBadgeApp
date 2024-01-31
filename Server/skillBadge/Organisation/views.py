@@ -10,7 +10,7 @@ from Authencation.models import CustomUser
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
 from Authencation.serializers import UserSerializer
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 
 # class BadgeAssignmentAPIView(APIView):
@@ -223,7 +223,7 @@ class EditIssuerDetails(APIView):
     def get(self, request, id=None):
         try:
             user_id = request.user.id
-            
+            print(request.user.name)
             if user_id:
                 issuer = get_object_or_404(CustomUser, id=user_id)
                 serializer = Issuer_Serializer(instance=issuer)
@@ -245,17 +245,18 @@ class EditIssuerDetails(APIView):
 
     def patch(self, request, id=None):
         try:
-            issuer = get_object_or_404(CustomUser, id=id)
-            if not issuer.is_org:
+            user = request.user
+        #issuer = get_object_or_404(CustomUser, id=id)
+            if not user.is_org:
                 return Response(
-                    {
+                    {  
                         "status": False,
                         "status_code": 404,
                         "message": "Organization not found",
                     },
                     status=status.HTTP_404_NOT_FOUND,
                 )
-            serializer = Issuer_Serializer(instance=issuer, data=request.data, partial=True)
+            serializer = Issuer_Serializer(instance=user, data=request.data, partial=True)
 
             if serializer.is_valid():
                 serializer.save()
@@ -264,7 +265,7 @@ class EditIssuerDetails(APIView):
                         "data": serializer.data,
                         "status": True,
                         "status_code": 201,
-                        "message": "Successfully Register",
+                        "message": "Successfully Changed",
                     }
                 )
             else:
@@ -280,7 +281,7 @@ class EditIssuerDetails(APIView):
 
         except CustomUser.DoesNotExist:
             return Response(
-                {"msg": "Issuer not found"},
+                {"msg": "User not found"},
                 status=status.HTTP_404_NOT_FOUND,
             )
         except Exception as e:
@@ -299,10 +300,16 @@ class ApplyOrg(APIView):
     def patch(self, request):
         try:
             user = request.user
+            documents_file = request.data.get('documents')
+
+        # Handle 'documents' separately if it exists in request.data
+            if documents_file:
+                user.documents = documents_file
+                user.save()
             # serializer = UpdateUserSerializer(instance=user, data=request.data, partial=True)
             # issuer = get_object_or_404(CustomUser, id=id)
-            
-            serializer = Issuer_Serializer(instance=user, data=request.data, partial=True)
+            print(request.data)
+            serializer = Apply_Serializer(instance=user, data=request.data, partial=True)
 
             if serializer.is_valid():
                 serializer.save()
@@ -375,4 +382,29 @@ class DeleteIssuerDetails(APIView):
             return Response(
                 {"error": f"An unexpected error occurred: {str(e)}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+class VerifyBadgeAPIView(APIView):
+    permission_classes = [AllowAny]
+    def get(self,request):
+        try:
+            uvc = request.query_params.get("uvc")
+            verified_badge = Badge_Assignment.objects.get(verification_code=uvc)
+            view_badge = BadgeAssignmentSerializer(verified_badge)  
+            if view_badge:
+                badge_data = Badges.objects.get(pk=view_badge.data.get("badge_id"))
+                badge = BadgesSerializer(badge_data)
+                recipient_data = CustomUser.objects.get(pk=view_badge.data.get("recipient"))
+                recipient = UserSerializer(recipient_data)
+                return Response(
+                    {"msg":"Badge Verified",
+                     "assignment_data":view_badge.data,
+                     "badge_data":badge.data,
+                     "user_data":recipient.data,
+                     "verified":True},
+                     status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(
+                {"message":"Not a Valid Badge Assignment","error": f"An unexpected error occurred: {str(e)}"},
+                status=status.HTTP_404_NOT_FOUND,
             )

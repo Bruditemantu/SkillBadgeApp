@@ -27,7 +27,7 @@ class Issuer_Serializer(serializers.ModelSerializer):
 class BadgeAssignmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Badge_Assignment
-        fields = ['id','badge_id','recipient']          
+        fields = '__all__'          
 
 class GetBadgesSerializer(serializers.ModelSerializer): 
     assigned_users = UserSerializer(many=True)
@@ -35,7 +35,7 @@ class GetBadgesSerializer(serializers.ModelSerializer):
         model = Badges
         fields = ['id','org_id','name','description','criteria','image_url','date_created','expiration_durations','assigned_users']
     
-class Issuer_Serializer(serializers.ModelSerializer):
+class Apply_Serializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = [
@@ -44,5 +44,14 @@ class Issuer_Serializer(serializers.ModelSerializer):
             'organisation_domain',
             'organisation_size',
             'badges_and_types',
+             'documents',
             
         ]
+        
+        def update(self, instance, validated_data):
+        # Handle 'documents' separately if it exists in validated_data
+            documents = validated_data.pop('documents', None)
+            if documents_file:
+                instance.documents = documents_file  # Assuming 'documents' is a FileField in your model
+
+            return super().update(instance, validated_data)

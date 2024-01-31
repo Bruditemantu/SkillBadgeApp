@@ -3,17 +3,26 @@ import Axios from 'axios';
 import InputField from "../InputField";
 import CustomBtn from "../CustomBtn";
 
-const Issuer = () => {
+const EditDetails = () => {
   const [formData, setFormData] = useState({
-    Organisation_Name: "",
+    organisation: "",
     organisation_domain: "",
     organisation_size: "",
     badges_and_types: "",
+    
   });
 
+const [showSuccessPopup, setShowSuccessPopup] = useState(false); // New state
+
+const SuccessPopup = ({ onClose }) => (
+  <div className="bg-green text-white">
+    <p>Form submitted successfully!</p>
+    
+  </div>
+);
 
 
-  const { Organisation_Name, organisation_domain, organisation_size, badges_and_types} = formData;
+  const { organisation, organisation_domain, organisation_size, badges_and_types } = formData;
 
   const onChangeInput = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -24,50 +33,55 @@ const Issuer = () => {
     const config = {
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `token ${localStorage.getItem("token")}`
       },
     };
-    const response = await Axios.post(
-      "http://127.0.0.1:8000/api/org/apply_for_issuer",
+    const response = await Axios.patch(
+      "http://127.0.0.1:8000/api/org/apply_for_issuer/",
       formData,
       config
     );
     console.log(response.data);
+    setShowSuccessPopup(true);
+
   };
 
-   return (
+  return (
     <>
-      <div className=" bg-[#121212] flex items-center justify-center h-screen">
+      <div className="bg-[#121212] flex items-center justify-center h-screen">
         <div className="bg-[#161616] p-8 rounded shadow-md w-3/4 lg:w-2/4">
-          <h2 class="text-xl  font-medium text-white text-center mb-4 font-roboto tracking-wider">
-            Edit Details
+          <h2 className="text-xl font-medium text-white text-center mb-4 font-roboto tracking-wider">
+            Apply For Organisation
           </h2>
-          <form className="flex  space-x-4 flex-wrap justify-center ">
-            <div class="mb-4 w-60 ">
+          <form onSubmit={onSubmitHandler} className="flex space-x-4 flex-wrap justify-center " enctype="multipart/form-data">
+            <div className="mb-4 w-60 ">
               <InputField
-                // value={Organisation_Name}
+                value={organisation}
+                onChange={onChangeInput}
                 label="Organisation Name"
                 type="text"
-                id="Organisation_Name"
-
+                id="organisation"
                 placeholder="Enter Organisation Name"
-                name="Organisation_Name"
+                name="organisation"
               />
             </div>
 
             <div class="mb-4 w-60 ">
               <InputField
-              // value={organisation_domain}
+              value={organisation_domain}
+              onChange={onChangeInput}
                 label="Organisation Domain"
                 type="text"
-                id="Organisation_Domain"
+                id="organisation_domain"
                 placeholder="Enter Organisation Domain"
-                name="Organisation_Domain"
+                name="organisation_domain"
               />
             </div>
 
             <div class="mb-4 w-60 ">
               <InputField
-              // value={organisation_size}
+                value={organisation_size}
+                onChange={onChangeInput}
                 label="Organisation Size"
                 type="number"
                 id="organisation_size"
@@ -79,6 +93,7 @@ const Issuer = () => {
             <div class="mb-4 w-60 ">
               <InputField
                 value={badges_and_types}
+                onChange={onChangeInput}
                 label="Badges Type"
                 type="text"
                 id="badges_and_types"
@@ -86,20 +101,18 @@ const Issuer = () => {
                 name="badges_and_types"
               />
             </div>
+           
 
- 
-
-
-           <div className='mb-4 w-60 flex justify-center'>
-
-            <CustomBtn type="submit" label="Submit" />
-           </div>
+            <div className='mb-4 w-60 flex justify-center'>
+              <CustomBtn type="submit" label="Submit" />
+            </div>
           </form>
-          
+
+          {showSuccessPopup && <SuccessPopup onClose={() => setShowSuccessPopup(false)} />}
         </div>
       </div>
     </>
   );
 };
 
-export default Issuer;
+export default EditDetails;

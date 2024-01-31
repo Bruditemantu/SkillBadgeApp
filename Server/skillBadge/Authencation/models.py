@@ -34,6 +34,7 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
     organisation_size = models.IntegerField(null=True, blank=True)
     badges_and_types = models.TextField(null=True, blank=True)
     is_verified = models.BooleanField(default=False)
+    documents = models.FileField(upload_to='images/',null=True,blank=True)
     
     
 

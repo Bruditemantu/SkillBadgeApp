@@ -15,6 +15,7 @@ class Badges(models.Model):
     org_id = models.ForeignKey(CustomUser,on_delete=models.CASCADE,null=True)
     date_created=models.DateField(default=datetime.now().date(),null=True,blank=True)
     expiration_durations = models.IntegerField(default=0)
+    pdf_file = models.FileField(upload_to='pdfs/',null=True,blank=True)
     
 class Badge_Assignment(models.Model):
     badge_id = models.ForeignKey(Badges,on_delete=models.CASCADE)

@@ -10,11 +10,14 @@ const InputField = (props) => {
           {props.label}
         </label>
         <input
+          onChange={props.onChange}
+          value={props.value}
           type={props.type}
           id={props.id}
           name={props.name}
           placeholder={props.placeholder}
           class="mt-1 bg-transparent border-b-2 focus:outline-none text-white text-sm p-2 w-full  font-roboto"
+          required
         />
       </>
     </>
