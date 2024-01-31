@@ -35,21 +35,11 @@ const AllBadges = () => {
 
       
       const handleEditBadge = async (badgeId) => {
-        // Redirect or open a modal for editing based on your application's design
-        // You may want to pass the badge data to the edit page/modal
-        // Example: navigate(`/editBadge/${badgeId}`);
-        // try {
-        //   await Axios.put(`http://127.0.0.1:8000/api/org/crud/?badge_id=${badgeId}`, {
-        //     headers: {
-        //       Authorization: `token ${localStorage.getItem('token')}`,
-        //     },
-        //   });
+        navigate(`/editbadge/${badgeId}`);
         
-        //   fetchUserData();
-        // } catch (error) {
-        //   console.error('Error updating  badge:', error);
-        // }
-        navigate('/editbadge');
+      };
+      const handleSingleBadge = async (badgeId) => {
+        navigate(`/singlebadgeorg/${badgeId}`);
         
       };
       const handleDeleteBadge = async (badgeId) => {
@@ -170,7 +160,7 @@ useEffect(()=>{
         <div className='leftdisplay items-center'>
           
         {userData.map((badge, index) => (
-          <div key={index} className='firstbadge1 flex justify-between text-white  uppercase items-center h-9 w-3/4 bg-[#181818] rounded-md p-3 mt-32 ml-32  max-lg:flex-col max-lg:h-2/3 max-lg:w-1/2 max-lg:my-5'  >
+          <div key={index} className='firstbadge1 flex justify-between text-white  uppercase items-center h-9 w-3/4 bg-[#181818] rounded-md p-3 mt-32 ml-32  max-lg:flex-col max-lg:h-2/3 max-lg:w-1/2 max-lg:my-5' onClick={() => handleSingleBadge(badge.id)} >
              <img className= "badgeimage -mx-12 max-lg:w-3/4  p-2 max-lg:h-3/4"src={`http://127.0.0.1:8000${badge.image_url}`} alt={`badge_${index}`} width={'140px'} height={'160px'}   data-aos= "flip-right"/>
              
            <p>{badge.name}</p>
@@ -178,15 +168,7 @@ useEffect(()=>{
             
             
             <p>{badge.expiration_durations}</p>
-              <div>
-                    {badge.assigned_users.map((user, userIndex) => (
-                      <div key={userIndex} className='badgeuser flex justify-between'>
-                        <p className='userid mx-2'>{user.id}</p>
-                        <p>{user.name}</p>
-                        {/* Add other user information as needed */}
-                      </div>
-                     ))}
-            </div>
+              
 
             <div className='buttonedit flex justify-center '>
               
