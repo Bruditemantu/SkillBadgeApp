@@ -11,25 +11,8 @@ from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
 from Authencation.serializers import UserSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
-
-
-# class BadgeAssignmentAPIView(APIView):
-#     def post(self, request):
-
-#             badge_assigned = Badge_Assignment.objects.filter(
-#                 badge_id=request.data.get("badge_id"), recipient_id=request.data.get("recipient")
-#             )
-#             if badge_assigned:
-#                 return Response(
-#                     {"msg": "Badge is already assigned to the user"},
-#                     status=status.HTTP_409_CONFLICT,
-#                 )
-#             serializer = BadgeAssignmentSerializer(data=request.data)
-#             if serializer.is_valid():
-#                 serializer.save()
-#                 return Response({"data":serializer.data}, status=status.HTTP_201_CREATED)
-#             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+from Utils.views import get_user
+from Utils.sendMail import send_custom_email
 
 class BadgeAssignmentAPIView(APIView):
     authentication_classes = [TokenAuthentication]
@@ -48,7 +31,13 @@ class BadgeAssignmentAPIView(APIView):
             serializer = BadgeAssignmentSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                return Response({"data": serializer.data}, status=status.HTTP_201_CREATED)
+                recipient = CustomUser.objects.get(pk=serializer.data.get("recipient"))
+                user = UserSerializer(recipient)
+                print(user.data)
+                context = {"subject":f"Congratulation {user.data.get('name')}! You have earned a new Badge.",
+                       "context_data":f"Dear {user.data.get('name')},<br> You have successfully earned a new badge."}
+                send_custom_email(user.data.get("email"),context)
+                return Response({"data": serializer.data,"assigned-to":user.data}, status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         except Exception as e:
@@ -58,68 +47,23 @@ class BadgeAssignmentAPIView(APIView):
             )
 
 
-# class BadgeDetailsAPIView(APIView):
-#     # create a badge
-#     def post(self, request):
-#         data = request.data
-#         serial = BadgesSerializer(data=data)
-#         if serial.is_valid():
-#             serial.save()
-#             return Response({"data": serial.data})
-#         return Response({"data": "invalid data"})
-
-#     # fetch badge data with the users it is assigned to
-#     def get(self, request):
-#         badge_id = request.query_params.get("badge_id")
-#         if badge_id:
-#             valid_badge = Badges.objects.get(pk=badge_id)
-#             if valid_badge:
-                
-#                 Badgeserializer = GetBadgesSerializer(valid_badge)
-#                 return Response(
-#                     {
-#                         "data": Badgeserializer.data,
-            
-#                     },
-#                     status=status.HTTP_200_OK,
-#                 )
-#             return Response(
-#                 {"msg": "Not a vaild badge"}, status=status.HTTP_404_NOT_FOUND
-#             )
-#         all_badges = Badges.objects.all()
-#         if all_badges:
-#             serializer = GetBadgesSerializer(all_badges, many=True)
-#             return Response(serializer.data, status=status.HTTP_200_OK)
-#         return Response({"msg": "No badges created yet"}, status=status.HTTP_200_OK)
-
-#     # delete a badge
-#     def delete(self, request):
-#         badge_id = request.query_params.get("badge_id")
-#         if badge_id:
-#             badge_to_delete = Badges.objects.get(pk=badge_id)
-#             badge_to_delete.delete()
-#             return Response({"msg": "Badge Deleted"}, status=status.HTTP_200_OK)
-
-#     # update a badge
-#     def put(self, request):
-#         data = request.data
-#         serial = BadgesSerializer(data=data)
-#         if serial.is_valid():
-#             serial.save()
-#             return Response({"data": serial.data})
-#         return Response(serial.errors, status=status.HTTP_400_BAD_REQUEST)
-
 class BadgeDetailsAPIView(APIView):
-    # create a badge
-    
+    # create a badge    
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     def post(self, request):
         try:
+            print(request.user.id,request.user.email)
             data = request.data
+            data["org_id"]=request.user.id
+            print(data)
             serial = BadgesSerializer(data=data)
             if serial.is_valid():
                 serial.save()
+                context = {"subject":f"Badge Creation Successfull!",
+                       "context_data":f"Dear {request.user.name},<br> you have created a new badge under your Organisation.<br><hr> <h2>Badge Details</h2> Badge Name : {serial.data.get('name')}<br> Badge Description : {serial.data.get('description')}<br> Badge Criteria : {serial.data.get('criteria')}<br>Date of Creation : {serial.data.get('date_created')}<br> Badge Validity : {serial.data.get('expiration_durations')} Days<br>"
+                       }
+                send_custom_email(request.user.email,context)
                 return Response({"data": serial.data}, status=status.HTTP_201_CREATED)
             return Response({"error": "Invalid data"}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -132,6 +76,8 @@ class BadgeDetailsAPIView(APIView):
     # fetch badge data with the users it is assigned to
     def get(self, request):
         try:
+            user = get_user(request)
+            print(user)
             badge_id = request.query_params.get("badge_id")
             if badge_id:
                 valid_badge = Badges.objects.get(pk=badge_id)
@@ -396,10 +342,13 @@ class VerifyBadgeAPIView(APIView):
                 badge = BadgesSerializer(badge_data)
                 recipient_data = CustomUser.objects.get(pk=view_badge.data.get("recipient"))
                 recipient = UserSerializer(recipient_data)
+                org_data = CustomUser.objects.get(pk=badge.data.get("org_id"))
+                org = UserSerializer(org_data)
                 return Response(
                     {"msg":"Badge Verified",
                      "assignment_data":view_badge.data,
                      "badge_data":badge.data,
+                     "org_data":org.data,
                      "user_data":recipient.data,
                      "verified":True},
                      status=status.HTTP_200_OK)

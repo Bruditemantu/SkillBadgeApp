@@ -10,6 +10,7 @@ import EditProfile from "./Components/User-Dash/EditProfile";
 import AllBadges from "./Components/User-Dash/AllBadges";
 import SingleBadge from "./Components/Org-Dashboard/SingleBadge/SingleBadge";
 import SignUpPage from "./Components/SignupComponent/SignUpPage";
+import VerifyBadge from "./Components/Org-Dashboard/VerifyBadge";
 
 function App() {
   return (
@@ -27,6 +28,8 @@ function App() {
         <Route path="/editprofile" element={<EditProfile />} />
         <Route path="/allbadges" element={<AllBadges />} />
         <Route path="/singlebadge" element={<SingleBadge/>}/>
+        <Route path="/verify-badge/:id" element={<VerifyBadge/>}/>
+        
       </Routes>
     </BrowserRouter>
   );
