@@ -5,12 +5,12 @@ from Authencation.models import CustomUser
 class BadgesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Badges
-        fields = ['id','name','description','criteria','image_url','date_created','expiration_durations']    
+        fields = ['id','name','description','criteria','image_url','date_created','expiration_durations','org_id']    
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model =  CustomUser
-        fields = ['id','name']  
+        fields = ['id','name','username','email']  
         
 class Issuer_Serializer(serializers.ModelSerializer):
     class Meta:
