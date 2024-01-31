@@ -58,7 +58,7 @@ function NavBar() {
               <Link to="/">Home</Link>
             </li>
             <li>
-              <Link to="/#about" onClick={jumpToReleventDiv("about")}>About Us</Link>
+              <Link to="/#about">About Us</Link>
             </li>
             <li>
               <Link to="/Works">Contact Us</Link>
