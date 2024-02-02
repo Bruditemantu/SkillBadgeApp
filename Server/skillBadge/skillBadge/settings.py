@@ -103,7 +103,7 @@ DATABASES = {
         'NAME': "skb",
         'USER': "postgres",
         'HOST': "localhost",
-        'PASSWORD': 12345678,
+        'PASSWORD': 1234,
         "PORT": 5432,
     }
 }
@@ -147,8 +147,8 @@ USE_TZ = True
 # STATIC_URL = 'static/'
 
 
-STATIC_URL = '/images/'  # Set the desired URL path
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'images')]  
+STATIC_URL = '/media/'  # Set the desired URL path
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'media')]  
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
@@ -163,6 +163,6 @@ CORS_ALLOW_CREDENTIALS = True
 
 
 
-# settings.py
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+# # settings.py
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# MEDIA_URL = '/media/'

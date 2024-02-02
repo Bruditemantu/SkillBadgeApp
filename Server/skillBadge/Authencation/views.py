@@ -51,7 +51,7 @@ class SignupPage(APIView):
             context = {"subject":f"Registration Successful! Welcome to the team {serializer.data.get('name')}",
                        "context_data":f"Dear {serializer.data.get('name')}, thank you for your registration with us."
                        }
-            # send_custom_email(serializer.data.get("email"),context)
+            send_custom_email(serializer.data.get("email"),context)
             return Response(
                 {
                     "status": True,

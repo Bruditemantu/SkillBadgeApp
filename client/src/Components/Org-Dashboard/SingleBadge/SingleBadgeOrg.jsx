@@ -63,6 +63,11 @@ const SingleBadgeOrg = () => {
     
 }, []);
 
+const handleLogout = () =>{
+  localStorage.removeItem("token");
+  navigate("/login");
+}
+
   return (
     <>
      <div className="contain m-auto  h-full flex justify-center max-lg:flex-wrap">
@@ -115,7 +120,7 @@ const SingleBadgeOrg = () => {
        <div className="logout flex justify-center mx-28">
             <button
               className="logoutbtn bg-teal-600 w-full  px-1 py-1 text-xl font-semibold tracking-wider rounded-md uppercase m-10 hover:bg-blue-400"
-              onClick={() => navigate("/login")}
+              onClick={handleLogout}
             >
               Logout
             </button>
@@ -131,7 +136,7 @@ const SingleBadgeOrg = () => {
         <div className="bg-[#161616] p-8 rounded flex flex-col lg:flex-row shadow-md gap-2 lg:w-4/5">
           <div className="lg:w-1/2 flex justify-center items-center lg:border-r-2">
             <div className="w-5/12">
-              <img src={`http://127.0.0.1:8000${userDataData.image_url}`}  alt="Badge-Check" />
+              <img src={`http://127.0.0.1:8000/media${userDataData.image_url}`}  alt="Badge-Check" />
             </div>
           </div>
 

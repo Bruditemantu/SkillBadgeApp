@@ -64,8 +64,10 @@ const handleSingleBadge = async (badgeId) => {
   
 };
 
-
-
+const handleLogout = () =>{
+  localStorage.removeItem("token");
+  navigate("/login");
+}
 
 useEffect(()=>{
   AOS.init({
@@ -138,7 +140,7 @@ useEffect(()=>{
        <div className="logout flex justify-center mx-28">
             <button
               className="logoutbtn bg-teal-600 w-full  px-1 py-1 text-xl font-semibold tracking-wider rounded-md uppercase m-10 hover:bg-blue-400"
-              onClick={() => navigate("/login")}
+              onClick={handleLogout}
             >
               Logout
             </button>
@@ -151,7 +153,7 @@ useEffect(()=>{
           
         {userData.map((badge, index) => (
           <div key={index} className='firstbadge1 flex justify-between text-white m-1 uppercase items-center h-10 w-3/4 bg-[#181818] rounded-md p-3 mt-32 ml-20  max-lg:flex-col max-lg:h-2/3 max-lg:w-1/2 max-lg:my-5' onClick={() => handleSingleBadge(badge.id)} >
-             <img className= "badgeimage -mx-12 max-lg:w-3/4  p-2 max-lg:h-3/4"src={`http://127.0.0.1:8000${badge.image_url}`} alt={`badge_${index}`} width={'160px'} height={'160px'}   data-aos= "flip-right"/>
+             <img className= "badgeimage -mx-12 max-lg:w-3/4  p-2 max-lg:h-3/4"src={`http://127.0.0.1:8000/media${badge.image_url}`} alt={`badge_${index}`} width={'160px'} height={'160px'}   data-aos= "flip-right"/>
              
            <p>{badge.name}</p>
             <p>{badge.date_created}</p>

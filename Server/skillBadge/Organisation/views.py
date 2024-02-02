@@ -46,7 +46,7 @@ class BadgeAssignmentAPIView(APIView):
                 user = UserSerializer(recipient)
                 print(user.data)
                 context = {"subject":f"Congratulation {user.data.get('name')}! You have earned a new Badge.",
-                       "context_data":f"Dear {user.data.get('name')},<br> You have successfully earned a new badge."}
+                       "context_data":f"Dear {user.data.get('name')},<br> You have successfully earned a new badge.<br> You can verify the badge from the link below.<br> http://localhost:3000/verify-badge/{serializer.data.get('verification_code')}"}
                 send_custom_email(user.data.get("email"),context)
                 return Response({"data": serializer.data,"assigned-to":user.data}, status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -60,7 +60,12 @@ function UserProfile() {
       }
     };
     fetchUserData();
-  }); // Empty dependency array ensures that the effect runs only once, similar to componentDidMount
+  },[]); 
+
+  const handleLogout = () =>{
+    localStorage.removeItem("token");
+    navigate("/login");
+  }
 
   useEffect(() => {
     AOS.init({
@@ -138,7 +143,7 @@ function UserProfile() {
           <div className="logout mr-20">
             <button
               className="logoutbtn bg-teal-600 w-full px-2 py-3 text-xl font-semibold tracking-wider rounded-md uppercase m-10 hover:bg-blue-200"
-              onClick={() => navigate("/login")}
+              onClick={handleLogout}
             >
               Logout
             </button>
@@ -177,7 +182,7 @@ function UserProfile() {
               >
                 <img
                   className="object-fit  h-38 w-38 my-4"
-                  src={`http://127.0.0.1:8000${badge.image_url}`}
+                  src={`http://127.0.0.1:8000/media${badge.image_url}`}
                   alt={`badge_${index}`}
                   width={"180px"}
                   height={"180px"}
